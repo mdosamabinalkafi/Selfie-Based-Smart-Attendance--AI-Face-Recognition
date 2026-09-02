@@ -1,0 +1,4133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Employee Facilities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+body{
+    min-height:100vh;
+    background:radial-gradient(circle at top left,#1d4ed8 0%,transparent 25%),
+    radial-gradient(circle at bottom right,#0f766e 0%,transparent 25%),
+    linear-gradient(135deg,#020617,#0f172a,#111827);
+    color:white;
+    padding:25px;
+}
+.container{ max-width:1400px; margin:auto; }
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    gap:15px;
+}
+.logoWrap{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+.logo{
+    width:55px;
+    height:55px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#3b82f6,#06b6d4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:700;
+    box-shadow:0 15px 35px rgba(59,130,246,.35);
+}
+.title h1{ font-size:26px; }
+.title p{ color:#94a3b8; font-size:13px; margin-top:4px; }
+.topbar-right{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+.settingsBtn{
+    border:none;
+    padding:10px 16px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6366f1,#4f46e5);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    transition:0.3s;
+}
+.settingsBtn:hover{ opacity:0.85; transform:scale(0.97); }
+.logoutBtn{
+    border:none;
+    padding:10px 16px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    transition:0.3s;
+}
+.logoutBtn:hover{ opacity:0.85; transform:scale(0.97); }
+
+/* ========== ADMIN TAB NAVIGATION ========== */
+.admin-tabs {
+    display:flex;
+    gap:6px;
+    margin-bottom:20px;
+    background:rgba(255,255,255,.05);
+    border-radius:14px;
+    padding:6px;
+    flex-wrap:wrap;
+    border:1px solid rgba(255,255,255,.06);
+    overflow-x:auto;
+}
+.admin-tabs::-webkit-scrollbar{ display:none; }
+.admin-tab {
+    padding:10px 18px;
+    border:none;
+    border-radius:10px;
+    background:transparent;
+    color:#94a3b8;
+    cursor:pointer;
+    font-weight:500;
+    font-size:13px;
+    transition:0.3s;
+    white-space:nowrap;
+}
+.admin-tab:hover {
+    color:white;
+    background:rgba(255,255,255,.05);
+}
+.admin-tab.active {
+    background:rgba(255,255,255,.1);
+    color:white;
+    box-shadow:0 4px 15px rgba(0,0,0,0.2);
+}
+.admin-tab .tab-icon { margin-right:6px; }
+
+/* ========== ADMIN CONTENT ========== */
+.admin-content {
+    display:none;
+}
+.admin-content.active {
+    display:block;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:330px 1fr;
+    gap:20px;
+}
+.card{
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:18px 20px;
+    transition:0.3s;
+}
+.card:hover{ border-color:rgba(255,255,255,.12); }
+.cardTitle{ margin-bottom:14px; }
+.cardTitle h2{ font-size:20px; font-weight:600; }
+.cardTitle p{ color:#94a3b8; font-size:12px; margin-top:2px; }
+.inputGroup{ margin-bottom:10px; }
+.inputGroup label{
+    display:block;
+    margin-bottom:4px;
+    color:#cbd5e1;
+    font-size:12px;
+    font-weight:500;
+}
+input,select{
+    width:100%;
+    padding:10px 14px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    border:1px solid rgba(255,255,255,.05);
+    font-size:13px;
+    transition:0.3s;
+}
+input:focus,select:focus{ border-color:#3b82f6; background:rgba(255,255,255,.12); }
+select option{ color:#1a1a2e; }
+.facility-input-group{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+.facility-input-group select{ flex:1; }
+.add-facility-btn{
+    padding:10px 12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    font-size:12px;
+    white-space:nowrap;
+    transition:0.3s;
+}
+.add-facility-btn:hover{ opacity:0.85; transform:scale(0.97); }
+.saveBtn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:6px;
+    transition:0.3s;
+}
+.saveBtn:hover{ opacity:0.85; transform:scale(0.97); }
+.updateBtn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:6px;
+    display:none;
+    transition:0.3s;
+}
+.updateBtn:hover{ opacity:0.85; transform:scale(0.97); }
+.cancelBtn{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    margin-top:4px;
+    display:none;
+    transition:0.3s;
+}
+.cancelBtn:hover{ background:rgba(255,255,255,.15); }
+.tableHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+    gap:10px;
+}
+.tableHeader h2{ font-size:18px; font-weight:600; }
+.searchBox{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    padding:8px 14px;
+    min-width:180px;
+}
+.searchBox input{
+    width:100%;
+    background:none;
+    border:none;
+    outline:none;
+    color:white;
+    font-size:12px;
+    padding:0;
+}
+.searchBox input::placeholder{ color:#94a3b8; }
+.btn-group{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+.btn-excel{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-excel:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-employee{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-employee:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-attendance{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#06b6d4,#0891b2);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-attendance:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-leave{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-leave:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-holiday{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#60a5fa,#3b82f6);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-holiday:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-balance{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-balance:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-refresh{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6366f1,#4f46e5);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-refresh:hover{ opacity:0.85; transform:scale(0.97); }
+.btn-report{
+    padding:8px 14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.btn-report:hover{ opacity:0.85; transform:scale(0.97); }
+.month-select{
+    padding:8px 12px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    border:1px solid rgba(255,255,255,.05);
+    font-size:12px;
+    cursor:pointer;
+    width:150px;
+}
+.month-select option{ color:#1a1a2e; }
+.tableWrap{ overflow-x:auto; margin-top:8px; }
+table{ width:100%; border-collapse:collapse; }
+th{
+    background:rgba(255,255,255,.05);
+    padding:10px 10px;
+    text-align:left;
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:500;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+td{
+    padding:10px 10px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    font-size:12px;
+}
+tr:hover{ background:rgba(255,255,255,.04); }
+.facility{
+    padding:4px 10px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.green{ background:rgba(34,197,94,.15); color:#4ade80; }
+.blue{ background:rgba(59,130,246,.15); color:#60a5fa; }
+.orange{ background:rgba(249,115,22,.15); color:#fb923c; }
+.purple{ background:rgba(168,85,247,.15); color:#c084fc; }
+.priority-badge{
+    padding:3px 10px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.priority-high{ background:rgba(239,68,68,0.2); color:#f87171; }
+.priority-neutral{ background:rgba(245,158,11,0.2); color:#fbbf24; }
+.priority-low{ background:rgba(34,197,94,0.2); color:#4ade80; }
+.attendance-badge{
+    padding:3px 10px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.attendance-present{ background:rgba(34,197,94,0.2); color:#4ade80; }
+.attendance-late{ background:rgba(245,158,11,0.2); color:#fbbf24; }
+.attendance-absent{ background:rgba(239,68,68,0.2); color:#f87171; }
+.attendance-leave{ background:rgba(59,130,246,0.2); color:#60a5fa; }
+.attendance-holiday{ background:rgba(59,130,246,0.2); color:#60a5fa; }
+.leave-status{
+    padding:3px 10px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.leave-pending{ background:rgba(245,158,11,0.2); color:#fbbf24; }
+.leave-approved{ background:rgba(34,197,94,0.2); color:#4ade80; }
+.leave-rejected{ background:rgba(239,68,68,0.2); color:#f87171; }
+.balance-badge{
+    padding:2px 8px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.balance-casual{ background:rgba(34,197,94,0.15); color:#4ade80; }
+.balance-sick{ background:rgba(59,130,246,0.15); color:#60a5fa; }
+.balance-earn{ background:rgba(245,158,11,0.15); color:#fbbf24; }
+.blood-badge{
+    padding:2px 8px;
+    border-radius:50px;
+    font-size:10px;
+    font-weight:600;
+    display:inline-block;
+}
+.blood-a{ background:rgba(239,68,68,0.2); color:#f87171; }
+.blood-b{ background:rgba(59,130,246,0.2); color:#60a5fa; }
+.blood-ab{ background:rgba(168,85,247,0.2); color:#c084fc; }
+.blood-o{ background:rgba(34,197,94,0.2); color:#4ade80; }
+.action-btn{
+    border:none;
+    padding:4px 10px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    font-size:10px;
+    font-weight:600;
+    margin:1px;
+    transition:0.3s;
+}
+.action-btn:hover{ opacity:0.85; transform:scale(0.95); }
+.editBtn{ background:linear-gradient(135deg,#3b82f6,#2563eb); }
+.deleteBtn{ background:linear-gradient(135deg,#ef4444,#dc2626); }
+.approveBtn{ background:linear-gradient(135deg,#22c55e,#16a34a); }
+.rejectBtn{ background:linear-gradient(135deg,#ef4444,#dc2626); }
+.loginScreen{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.loginCard{
+    width:100%;
+    max-width:380px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border-radius:24px;
+    padding:30px;
+    text-align:center;
+}
+.loginCard h1{ font-size:24px; margin-bottom:4px; }
+.loginCard p{ color:#94a3b8; font-size:13px; margin-bottom:20px; }
+.loginCard .inputGroup{ margin-bottom:14px; text-align:left; }
+.loginBtn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:4px;
+    transition:0.3s;
+}
+.loginBtn:hover{ opacity:0.85; transform:scale(0.97); }
+.hidden{ display:none; }
+
+/* Modals */
+.modal-overlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(8px);
+    z-index:999;
+    align-items:center;
+    justify-content:center;
+}
+.modal-box{
+    background:#1e293b;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:20px;
+    padding:24px 28px;
+    max-width:550px;
+    width:95%;
+    position:relative;
+    max-height:90vh;
+    overflow-y:auto;
+}
+.modal-box h2{ font-size:20px; margin-bottom:4px; }
+.modal-box p{ color:#94a3b8; font-size:12px; margin-bottom:16px; }
+.modal-box .inputGroup{ margin-bottom:12px; }
+.modal-box .inputGroup label{
+    display:block;
+    margin-bottom:4px;
+    color:#cbd5e1;
+    font-size:12px;
+}
+.modal-box .inputGroup input, .modal-box .inputGroup select{
+    width:100%;
+    padding:10px 14px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    border:1px solid rgba(255,255,255,.05);
+    font-size:13px;
+}
+.modal-box .inputGroup input:focus, .modal-box .inputGroup select:focus{ border-color:#8b5cf6; }
+.modal-box .inputGroup select option{ color:#1a1a2e; }
+.modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+}
+.modal-actions button{
+    flex:1;
+    padding:11px;
+    border:none;
+    border-radius:12px;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    transition:0.3s;
+}
+.modal-actions button:hover{ opacity:0.85; transform:scale(0.97); }
+.modal-save-btn{ background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:white; }
+.modal-cancel-btn{ background:rgba(255,255,255,.1); color:white; }
+.modal-close{
+    position:absolute;
+    top:12px;
+    right:16px;
+    background:none;
+    border:none;
+    color:#94a3b8;
+    font-size:20px;
+    cursor:pointer;
+}
+.modal-close:hover{ color:white; }
+small{ color:#94a3b8; font-size:10px; margin-top:3px; display:block; }
+
+/* Full Width */
+.full-width{
+    grid-column: 1 / -1;
+}
+
+/* Employee Card View */
+.employee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px;
+    margin-top: 10px;
+}
+.employee-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+.employee-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6, #06b6d4);
+    opacity: 0;
+    transition: 0.3s;
+}
+.employee-card:hover {
+    background: rgba(255,255,255,.1);
+    transform: translateY(-3px);
+    border-color: rgba(255,255,255,.15);
+}
+.employee-card:hover::before { opacity: 1; }
+.employee-card .emp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+.employee-card .emp-name { font-size: 15px; font-weight: 600; }
+.employee-card .emp-id {
+    font-size: 11px;
+    color: #94a3b8;
+    background: rgba(255,255,255,.08);
+    padding: 2px 10px;
+    border-radius: 50px;
+}
+.employee-card .emp-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+.employee-card .emp-details span { display: flex; align-items: center; gap: 4px; }
+.employee-card .emp-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+.employee-card .emp-actions button {
+    flex: 1;
+    padding: 6px;
+    border: none;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.employee-card .emp-actions button:hover { opacity: 0.85; transform: scale(0.97); }
+.emp-edit-btn { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; }
+.emp-delete-btn { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
+
+.employee-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.employee-stats .stat-item {
+    background: rgba(255,255,255,.06);
+    border-radius: 10px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+.employee-stats .stat-item .num { font-weight: 700; font-size: 16px; color: #8b5cf6; }
+.employee-stats .stat-item .num.blood-a { color: #f87171; }
+.employee-stats .stat-item .num.blood-b { color: #60a5fa; }
+.employee-stats .stat-item .num.blood-ab { color: #c084fc; }
+.employee-stats .stat-item .num.blood-o { color: #4ade80; }
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.schedule-box {
+    background: rgba(255,255,255,.05);
+    border-radius: 14px;
+    padding: 14px;
+}
+.schedule-box-full {
+    grid-column: 1 / -1;
+}
+
+.attendance-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.attendance-stats .stat-item {
+    background: rgba(255,255,255,.06);
+    border-radius: 10px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+.attendance-stats .stat-item .num { font-weight: 700; font-size: 16px; }
+.attendance-stats .stat-item .num.present { color: #4ade80; }
+.attendance-stats .stat-item .num.late { color: #fbbf24; }
+.attendance-stats .stat-item .num.absent { color: #f87171; }
+.attendance-stats .stat-item .num.leave { color: #60a5fa; }
+.attendance-stats .stat-item .num.holiday { color: #60a5fa; }
+
+/* Balance Cards */
+.balance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.balance-card {
+    background: rgba(255,255,255,.05);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+.balance-card .bal-icon { font-size: 28px; }
+.balance-card .bal-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+.balance-card .bal-numbers { font-size: 14px; font-weight: 600; margin-top: 4px; }
+.balance-card .bal-total { color: #94a3b8; }
+.balance-card .bal-used { color: #fbbf24; }
+.balance-card .bal-remaining { color: #4ade80; }
+
+.holiday-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 2px;
+}
+.holiday-tag.saturday { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.holiday-tag.sunday { background: rgba(239,68,68,0.2); color: #f87171; }
+.holiday-tag.friday { background: rgba(34,197,94,0.2); color: #4ade80; }
+
+@media(max-width:950px){
+    .grid{ grid-template-columns:1fr; }
+    .full-width{ grid-column: 1; }
+    .tableHeader{ flex-direction:column; align-items:stretch; }
+    .btn-group{ justify-content:center; }
+    .employee-grid { grid-template-columns: 1fr; }
+    .schedule-grid { grid-template-columns: 1fr; }
+    .schedule-box-full { grid-column: 1; }
+    .balance-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!--========================================================================================= LOGIN =========================================================================================-->
+<div class="loginScreen" id="loginScreen">
+    <div class="loginCard">
+        <h1>🔐 Admin Login</h1>
+        <p>Secure access to employee facilities system</p>
+        <div class="inputGroup">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter username">
+        </div>
+        <div class="inputGroup">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+        </div>
+        <button class="loginBtn" onclick="login()">Login Now</button>
+    </div>
+</div>
+    
+<!--========================================================================================= LOGIN END =========================================================================================-->
+
+<!-- MAIN PANEL -->
+<div class="container hidden" id="mainPanel">
+    <div class="topbar">
+        <div class="logoWrap">
+            <div class="logo">FL</div>
+            <div class="title">
+                <h1>Admin Dashboard</h1>
+                <p>Frontier Labs Employee Facilities Management</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+             <button class="settingsBtn" onclick="openPopupSettings()">🎉 Popup</button>
+            <button class="settingsBtn" onclick="openSettingsModal()">⚙️ Settings</button>
+            <button class="logoutBtn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    
+    
+
+    <!-- =================================================================================== TAB NAVIGATION =========================================================================================== -->
+    
+    <div class="admin-tabs">
+        
+         <button class="admin-tab active" onclick="showAdminTab('schedule')">
+            <span class="tab-icon">⏰</span> Schedule
+        </button>
+       
+        <button class="admin-tab" onclick="showAdminTab('employees')">
+            <span class="tab-icon">👥</span> Employees
+        </button>
+        <button class="admin-tab" onclick="showAdminTab('attendance')">
+            <span class="tab-icon">📋</span> Attendance
+        </button>
+        <button class="admin-tab" onclick="showAdminTab('leave')">
+            <span class="tab-icon">🏖️</span> Leave
+        </button>
+        
+        <button class="admin-tab" onclick="showAdminTab('balance')">
+            <span class="tab-icon">📊</span> Leave Balance
+        </button>
+        
+        <button class="admin-tab" onclick="showAdminTab('holiday')">
+            <span class="tab-icon">🎉</span> Holidays
+        </button>
+        
+         <button class="admin-tab" onclick="showAdminTab('records')">
+            <span class="tab-icon">📊</span> Facilities
+        </button>
+        
+        <button class="admin-tab" onclick="showAdminTab('recover')">
+   			 <span class="tab-icon">🔄</span> Recover Facilities
+		</button>
+        
+
+ 
+
+    </div>
+  <!-- =================================================================================== TAB NAVIGATION END =========================================================================================== -->
+     
+    <!-- =================================================================================== CONTENT SECTIONS =================================================================================== -->
+    
+    
+     <!-- 7. SCHEDULE -->
+    <div id="admin-schedule" class="admin-content active">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>⏰ Attendance Schedule Management</h2>
+                <p>Set Present window, Late window, and Auto Absent time for both shifts</p>
+            </div>
+            <div class="schedule-grid">
+                <div class="schedule-box">
+                    <h4 style="color:#4ade80; margin-bottom:8px; font-size:14px;">🌅 Morning - Present</h4>
+                    <p style="font-size:10px; color:#94a3b8; margin-bottom:6px;">Selfie required - PRESENT</p>
+                    <div class="inputGroup"><label>Start</label><input type="time" id="m_p_start" value="09:00"></div>
+                    <div class="inputGroup"><label>End</label><input type="time" id="m_p_end" value="09:15"></div>
+                </div>
+                <div class="schedule-box">
+                    <h4 style="color:#fbbf24; margin-bottom:8px; font-size:14px;">🌅 Morning - Late</h4>
+                    <p style="font-size:10px; color:#94a3b8; margin-bottom:6px;">No selfie - LATE</p>
+                    <div class="inputGroup"><label>Start</label><input type="time" id="m_l_start" value="09:16"></div>
+                    <div class="inputGroup"><label>End</label><input type="time" id="m_l_end" value="09:30"></div>
+                </div>
+                <div class="schedule-box">
+                    <h4 style="color:#4ade80; margin-bottom:8px; font-size:14px;">🌇 Afternoon - Present</h4>
+                    <p style="font-size:10px; color:#94a3b8; margin-bottom:6px;">Selfie required - PRESENT</p>
+                    <div class="inputGroup"><label>Start</label><input type="time" id="a_p_start" value="14:00"></div>
+                    <div class="inputGroup"><label>End</label><input type="time" id="a_p_end" value="14:15"></div>
+                </div>
+                <div class="schedule-box">
+                    <h4 style="color:#fbbf24; margin-bottom:8px; font-size:14px;">🌇 Afternoon - Late</h4>
+                    <p style="font-size:10px; color:#94a3b8; margin-bottom:6px;">No selfie - LATE</p>
+                    <div class="inputGroup"><label>Start</label><input type="time" id="a_l_start" value="14:16"></div>
+                    <div class="inputGroup"><label>End</label><input type="time" id="a_l_end" value="14:30"></div>
+                </div>
+                <div class="schedule-box schedule-box-full">
+                    <h4 style="color:#f87171; margin-bottom:8px; font-size:14px;">❌ Auto Absent Time</h4>
+                    <p style="font-size:11px; color:#94a3b8; margin-bottom:6px;">After this time, employees without attendance will be auto-marked (except holidays)</p>
+                    <div class="inputGroup"><label>Time</label><input type="time" id="auto_absent_time" value="16:00"></div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                <button class="btn-employee" onclick="saveSchedule()" style="background:linear-gradient(135deg,#22c55e,#16a34a);">💾 Save Schedule</button>
+                <button class="btn-employee" onclick="loadSchedule()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Load</button>
+                <button class="btn-employee" onclick="resetSchedule()" style="background:linear-gradient(135deg,#ef4444,#dc2626);">🔄 Reset</button>
+            </div>
+            <div id="scheduleStatus" style="margin-top:10px; padding:10px; border-radius:10px; background:rgba(34,197,94,.1); color:#4ade80; display:none; font-size:13px;">✅ Schedule saved successfully!</div>
+        </div>
+    </div>
+    
+    
+    
+    <!--=================================================================================== 1. RECORDS ===================================================================================-->
+    <div id="admin-records" class="admin-content">
+        <div class="grid">
+            <!-- FORM -->
+            <div class="card">
+                <div class="cardTitle">
+                    <h2 id="formTitle">➕ Add Record</h2>
+                    <p id="formSubtitle">Create new employee facility record</p>
+                </div>
+                <input type="hidden" id="editId" value="">
+                <div class="inputGroup">
+                    <label>📅 Date</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="inputGroup">
+                    <label>👤 Employee Name</label>
+                    <input type="text" id="name" placeholder="Enter employee name">
+                </div>
+                <div class="inputGroup">
+                    <label>🆔 Employee ID</label>
+                    <input type="text" id="empid" placeholder="Enter employee ID">
+                </div>
+                <div class="inputGroup">
+                    <label>📋 Facility Type</label>
+                    <div class="facility-input-group">
+                        <select id="facility">
+                            <option value="">Loading...</option>
+                        </select>
+                        <button class="add-facility-btn" onclick="openAddFacilityModal()" type="button">➕</button>
+                    </div>
+                </div>
+                <div class="inputGroup">
+                    <label>⏰ Start Time</label>
+                    <input type="time" id="start_time">
+                    <label style="margin-top:6px">⏰ End Time</label>
+                    <input type="time" id="end_time">
+                </div>
+                <div class="inputGroup">
+                    <label>📝 Note</label>
+                    <input type="text" id="note" placeholder="Write note">
+                </div>
+                <button class="saveBtn" id="saveBtn" onclick="saveRecord()">💾 Save Record</button>
+                <button class="updateBtn" id="updateBtn" onclick="updateRecord()">🔄 Update Record</button>
+                <button class="cancelBtn" id="cancelBtn" onclick="cancelEdit()">❌ Cancel</button>
+            </div>
+
+            <!-- TABLE -->
+            <div class="card">
+                <div class="tableHeader">
+                    <h2>📊 All Records</h2>
+                    <div class="btn-group">
+                        <select id="monthSelect" class="month-select" style="width:130px;">
+                            <option value="">📅 All Time</option>
+                            <option value="2026-01">Jan 2026</option>
+                            <option value="2026-02">Feb 2026</option>
+                            <option value="2026-03">Mar 2026</option>
+                            <option value="2026-04">Apr 2026</option>
+                            <option value="2026-05">May 2026</option>
+                            <option value="2026-06">Jun 2026</option>
+                            <option value="2026-07">Jul 2026</option>
+                            <option value="2026-08">Aug 2026</option>
+                            <option value="2026-09">Sep 2026</option>
+                            <option value="2026-10">Oct 2026</option>
+                            <option value="2026-11">Nov 2026</option>
+                            <option value="2026-12">Dec 2026</option>
+                        </select>
+                        <button class="btn-excel" onclick="exportExcel()">📥 Export Excel</button>
+                        <div class="searchBox">
+                            <input type="text" id="searchInput" placeholder="🔍 Search employee...">
+                        </div>
+                    </div>
+                </div>
+                <div class="tableWrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>ID</th>
+                                <th>Facility</th>
+                                <th>Duration</th>
+                                <th>Priority</th>
+                                <th>Note</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<!-- 8. RECOVER REQUESTS -->
+<div id="admin-recover" class="admin-content">
+    <div class="card full-width">
+        <div class="cardTitle">
+            <h2>🔄 Recover Requests</h2>
+            <p>Manage employee recover requests for facility time</p>
+        </div>
+        <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+            <div class="searchBox" style="flex:1; min-width:180px;">
+                <input type="text" id="recoverSearch" placeholder="🔍 Search by name or ID...">
+            </div>
+            <button class="btn-refresh" onclick="loadRecoverRequests()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+        </div>
+        <div class="attendance-stats" id="recoverStats">
+            <div class="stat-item">🟡 Pending: <span class="num" id="recoverPending" style="color:#fbbf24;">0</span></div>
+            <div class="stat-item">✅ Approved: <span class="num" id="recoverApproved" style="color:#4ade80;">0</span></div>
+            <div class="stat-item">❌ Rejected: <span class="num" id="recoverRejected" style="color:#f87171;">0</span></div>
+            <div class="stat-item">📊 Total: <span class="num" id="recoverTotal" style="color:#8b5cf6;">0</span></div>
+        </div>
+        <div class="tableWrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Employee</th>
+                        <th>ID</th>
+                        <th>Facility</th>
+                        <th>Duration</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recoverBody">
+                    <tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">Loading recover requests...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+        <!--=================================================================================== 1. RECORDS END ===================================================================================-->
+    
+    
+
+    <!--============================================================================== 2. EMPLOYEES ===============================================================================-->
+    <div id="admin-employees" class="admin-content">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>👥 Employee Management</h2>
+                <p>View and manage all employee biodata with login credentials</p>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+                <button class="btn-employee" onclick="openEmployeeModal()" style="background:linear-gradient(135deg,#22c55e,#16a34a);">➕ Add Employee</button>
+                <div class="searchBox" style="flex:1; min-width:180px;">
+                    <input type="text" id="employeeSearch" placeholder="🔍 Search employee...">
+                </div>
+                <button class="btn-employee" onclick="loadEmployees()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+            </div>
+            <div class="employee-stats" id="employeeStats">
+                <div class="stat-item">👥 Total: <span class="num" id="totalEmployees">0</span></div>
+                <div class="stat-item">🅰️ A+: <span class="num blood-a" id="bloodA">0</span></div>
+                <div class="stat-item">🅱️ B+: <span class="num blood-b" id="bloodB">0</span></div>
+                <div class="stat-item">🆎 AB+: <span class="num blood-ab" id="bloodAB">0</span></div>
+                <div class="stat-item">🅾️ O+: <span class="num blood-o" id="bloodO">0</span></div>
+            </div>
+            <div class="employee-grid" id="employeeGrid">
+                <div style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8;">Loading employees...</div>
+            </div>
+        </div>
+    </div>
+ <!--============================================================================== 2. EMPLOYEES END ===============================================================================-->
+    
+    
+    
+    <!--.================================================================================= 3. ATTENDANCE =============================================================-->
+    <div id="admin-attendance" class="admin-content">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>📋 Attendance Management</h2>
+                <p>View all employee attendance records with status</p>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+                <div class="searchBox" style="flex:1; min-width:180px;">
+                    <input type="text" id="attendanceSearch" placeholder="🔍 Search by name or ID...">
+                </div>
+                <select id="attendanceFilterMonth" class="month-select" style="width:150px;" onchange="loadAttendanceRecords()">
+                    <option value="">📅 All Months</option>
+                </select>
+                <button class="btn-report" onclick="downloadAttendancePDF()" style="background:linear-gradient(135deg,#ef4444,#dc2626);">📄 Download PDF</button>
+                <button class="btn-attendance" onclick="loadAttendanceRecords()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+            </div>
+            <div class="attendance-stats" id="attendanceStats">
+                <div class="stat-item">✅ Present: <span class="num present" id="attPresent">0</span></div>
+                <div class="stat-item">🟡 Late: <span class="num late" id="attLate">0</span></div>
+                <div class="stat-item">❌ Absent: <span class="num absent" id="attAbsent">0</span></div>
+                <div class="stat-item">🏖️ Leave: <span class="num leave" id="attLeave">0</span></div>
+                <div class="stat-item">🎉 Holiday: <span class="num holiday" id="attHoliday">0</span></div>
+                <div class="stat-item">📊 Total: <span class="num" id="attTotal" style="color:#8b5cf6;">0</span></div>
+            </div>
+            <div class="tableWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Employee Name</th>
+                            <th>ID</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Selfie</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceBody">
+                        <tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">Loading attendance records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+      
+    <!--.================================================================================= 3. ATTENDANCE END=============================================================-->
+
+    <!-- =================================================================================4. LEAVE =================================================================================-->
+    <div id="admin-leave" class="admin-content">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>🏖️ Leave Requests</h2>
+                <p>View and manage all employee leave requests</p>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+                <div class="searchBox" style="flex:1; min-width:180px;">
+                    <input type="text" id="leaveSearch" placeholder="🔍 Search by name or ID...">
+                </div>
+                <select id="leaveFilterMonth" class="month-select" style="width:150px;" onchange="loadLeaveRequests()">
+                    <option value="">📅 All Months</option>
+                </select>
+             <button class="btn-report" onclick="downloadLeaveReport()" 
+        style="background:linear-gradient(135deg,#3b82f6,#2563eb);">
+    📥 Download Report
+</button>
+                <button class="btn-leave" onclick="loadLeaveRequests()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+            </div>
+            <div class="attendance-stats" id="leaveStats">
+                <div class="stat-item">🟡 Pending: <span class="num" id="leavePending" style="color:#fbbf24;">0</span></div>
+                <div class="stat-item">✅ Approved: <span class="num" id="leaveApproved" style="color:#4ade80;">0</span></div>
+                <div class="stat-item">❌ Rejected: <span class="num" id="leaveRejected" style="color:#f87171;">0</span></div>
+                <div class="stat-item">📊 Total: <span class="num" id="leaveTotal" style="color:#8b5cf6;">0</span></div>
+            </div>
+            <div class="tableWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Employee</th>
+                            <th>ID</th>
+                            <th>Category</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveBody">
+                        <tr><td colspan="10" style="text-align:center; padding:30px; color:#94a3b8;">Loading leave requests...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. HOLIDAY -->
+    <div id="admin-holiday" class="admin-content">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>🎉 Holiday Management</h2>
+                <p>Set weekly holidays for employees (No auto-absent on holidays)</p>
+            </div>
+            
+            
+            <!-- HOLIDAY AUTO COUNT SETTINGS -->
+<div style="background:rgba(255,255,255,.05); border-radius:12px; padding:16px; margin-bottom:15px; border:1px solid rgba(255,255,255,.08);">
+    <h4 style="font-size:14px; color:#60a5fa; margin-bottom:10px;">⏰ Holiday Auto Count Settings</h4>
+    <p style="font-size:11px; color:#94a3b8; margin-bottom:12px;">
+        Set a time when holidays will be auto-counted for all employees.
+        At this time, employees with holiday today will be automatically marked.
+    </p>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; align-items:end;">
+        <div class="inputGroup" style="margin-bottom:0;">
+            <label>Auto Count Time</label>
+            <input type="time" id="holiday_auto_time" value="18:00">
+        </div>
+        <div class="inputGroup" style="margin-bottom:0;">
+            <label>Status</label>
+            <select id="holiday_auto_status" style="padding:10px 14px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:white; font-size:13px; border:1px solid rgba(255,255,255,.05);">
+                <option value="1">🟢 Active</option>
+                <option value="0">🔴 Inactive</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn-holiday" onclick="saveHolidayAutoSettings()" style="background:linear-gradient(135deg,#22c55e,#16a34a);">
+                💾 Save Settings
+            </button>
+        </div>
+    </div>
+    
+    <div id="holidayAutoStatus" style="margin-top:10px; padding:8px 12px; border-radius:8px; background:rgba(34,197,94,0.1); color:#4ade80; display:none; font-size:12px;">
+        ✅ Settings saved successfully!
+    </div>
+    
+    <div style="margin-top:10px; padding:10px; background:rgba(255,255,255,.04); border-radius:8px;">
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:12px; color:#94a3b8;">⏰ Current Auto Time: <strong id="currentAutoTime" style="color:#fbbf24;">18:00</strong></span>
+            <span style="font-size:12px; color:#94a3b8;">📊 Status: <strong id="currentAutoStatus" style="color:#4ade80;">Active</strong></span>
+            <button onclick="runHolidayAutoCount()" style="padding:6px 16px; border:none; border-radius:8px; background:linear-gradient(135deg,#6366f1,#4f46e5); color:white; cursor:pointer; font-size:12px;">
+                ▶️ Run Now
+            </button>
+        </div>
+    </div>
+</div>
+            
+            
+            
+            
+            <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+                <div class="searchBox" style="flex:1; min-width:180px;">
+                    <input type="text" id="holidaySearch" placeholder="🔍 Search employee by ID or Name...">
+                </div>
+                <button class="btn-holiday" onclick="loadHolidaySettings()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+                <span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:4px 12px; border-radius:50px; font-size:11px;">🟦 Saturday</span>
+                <span style="background:rgba(239,68,68,0.15); color:#f87171; padding:4px 12px; border-radius:50px; font-size:11px;">🟥 Sunday</span>
+                <span style="background:rgba(34,197,94,0.15); color:#4ade80; padding:4px 12px; border-radius:50px; font-size:11px;">🟩 Friday</span>
+                <span style="background:rgba(245,158,11,0.15); color:#fbbf24; padding:4px 12px; border-radius:50px; font-size:11px;">🟨 Monday-Friday</span>
+            </div>
+            <div class="tableWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Employee Name</th>
+                            <th>Holiday Days</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holidayBody">
+                        <tr><td colspan="4" style="text-align:center; padding:30px; color:#94a3b8;">Loading holiday settings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:15px; background:rgba(255,255,255,.05); border-radius:12px; padding:16px;">
+                <h4 style="font-size:14px; color:#60a5fa; margin-bottom:10px;">➕ Add Employee Holiday</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; align-items:end;">
+                    <div class="inputGroup" style="margin-bottom:0;">
+                        <label>Employee ID</label>
+                        <input type="text" id="holiday_emp_id" placeholder="e.g., FLDM013">
+                    </div>
+                    <div class="inputGroup" style="margin-bottom:0;">
+                        <label>Holiday Days</label>
+                        <select id="holiday_days">
+                            <option value="[6]">Saturday</option>
+                            <option value="[0]">Sunday</option>
+                            <option value="[5]">Friday</option>
+                            <option value="[5,6]">Friday & Saturday</option>
+                            <option value="[0,5]">Sunday & Friday</option>
+                            <option value="[0,6]">Sunday & Saturday</option>
+                            <option value="[0,5,6]">Friday, Saturday & Sunday</option>
+                            <option value="[]">None (No Holiday)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn-holiday" onclick="addHolidayEmployee()" style="background:linear-gradient(135deg,#22c55e,#16a34a);">➕ Add / Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. LEAVE BALANCE -->
+    <div id="admin-balance" class="admin-content">
+        <div class="card full-width">
+            <div class="cardTitle">
+                <h2>📊 Leave Balance Management</h2>
+                <p>Set and manage employee leave balances (Casual, Sick, Earn)</p>
+            </div>
+            <div style="background:rgba(255,255,255,.05); border-radius:12px; padding:16px; margin-bottom:12px;">
+                <p style="font-size:12px; color:#94a3b8;">
+                    <strong>📌 How it works:</strong>
+                    <br>• <span style="color:#4ade80;">Casual Leave:</span> 10 days/year (can be changed per employee)
+                    <br>• <span style="color:#60a5fa;">Sick Leave:</span> 10 days/year (can be changed per employee)
+                    <br>• <span style="color:#fbbf24;">Earn Leave:</span> Add manually with reason
+                    <br>• <span style="color:#94a3b8;">When Admin Approves a leave, it auto-deducts from balance.</span>
+                </p>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:end; background:rgba(255,255,255,.05); border-radius:12px; padding:16px;">
+                <div class="inputGroup" style="margin-bottom:0; flex:1; min-width:130px;">
+                    <label>Employee ID</label>
+                    <input type="text" id="bal_emp_id" placeholder="e.g., FLSD001">
+                </div>
+                <div class="inputGroup" style="margin-bottom:0; flex:1; min-width:80px;">
+                    <label>Casual</label>
+                    <input type="number" id="bal_casual" placeholder="10" value="10" min="0">
+                </div>
+                <div class="inputGroup" style="margin-bottom:0; flex:1; min-width:80px;">
+                    <label>Sick</label>
+                    <input type="number" id="bal_sick" placeholder="10" value="10" min="0">
+                </div>
+                <div class="inputGroup" style="margin-bottom:0; flex:1; min-width:80px;">
+                    <label>Earn Days</label>
+                    <input type="number" id="bal_earn" placeholder="0" value="0" min="0">
+                </div>
+                <div class="inputGroup" style="margin-bottom:0; flex:1; min-width:100px;">
+                    <label>Earn Reason</label>
+                    <input type="text" id="bal_earn_reason" placeholder="Reason">
+                </div>
+                <div>
+                    <button class="btn-balance" onclick="setEmployeeBalance()" style="background:linear-gradient(135deg,#22c55e,#16a34a);">💾 Set Balance</button>
+                </div>
+                <div>
+                    <button class="btn-refresh" onclick="loadBalanceData()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="tableWrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>ID</th>
+                            <th>Year</th>
+                            <th>Casual (Total/Used/Remaining)</th>
+                            <th>Sick (Total/Used/Remaining)</th>
+                            <th>Earn (Total/Used/Remaining)</th>
+                            <th>Earn Reason</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="balanceBody">
+                        <tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">Loading balance data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   
+   
+    
+    
+    <!-- ====================================== -->
+
+</div>
+
+<!-- ===================== MODALS ====================================================-->
+
+<!-- Add Facility Modal -->
+<div class="modal-overlay" id="addFacilityModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeAddFacilityModal()">✕</button>
+        <h2>➕ Add New Facility</h2>
+        <p>Add a new facility type to the system</p>
+        <div class="inputGroup">
+            <label>Facility Name (Bangla)</label>
+            <input type="text" id="newFacilityBn" placeholder="যেমন: বিশেষ ছুটি">
+        </div>
+        <div class="inputGroup">
+            <label>Facility Name (English)</label>
+            <input type="text" id="newFacilityEn" placeholder="যেমন: special_leave">
+            <small>Use lowercase with underscores</small>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closeAddFacilityModal()">Cancel</button>
+            <button class="modal-save-btn" onclick="saveNewFacility()">➕ Add Facility</button>
+        </div>
+    </div>
+</div>
+
+<!-- Employee Modal -->
+<div class="modal-overlay" id="employeeModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeEmployeeModal()">✕</button>
+        <h2 id="employeeModalTitle">➕ Add Employee</h2>
+        <p id="employeeModalSub">Add new employee with login credentials</p>
+        <input type="hidden" id="employeeEditId" value="">
+        <div class="inputGroup">
+            <label>Employee ID *</label>
+            <input type="text" id="emp_emp_id" placeholder="Enter employee ID">
+        </div>
+        <div class="inputGroup">
+            <label>Full Name *</label>
+            <input type="text" id="emp_name" placeholder="Enter full name">
+        </div>
+        <div class="inputGroup">
+            <label>Email</label>
+            <input type="email" id="emp_email" placeholder="Enter email address">
+        </div>
+        <div class="inputGroup">
+            <label>Phone</label>
+            <input type="text" id="emp_phone" placeholder="Enter phone number">
+        </div>
+        <div class="inputGroup">
+            <label>Address</label>
+            <input type="text" id="emp_address" placeholder="Enter address">
+        </div>
+        <div class="inputGroup">
+            <label>Blood Group</label>
+            <select id="emp_blood_group">
+                <option value="">Select</option>
+                <option value="A+">A+</option><option value="A-">A-</option>
+                <option value="B+">B+</option><option value="B-">B-</option>
+                <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                <option value="O+">O+</option><option value="O-">O-</option>
+            </select>
+        </div>
+        <div class="inputGroup">
+            <label>Emergency Contact</label>
+            <input type="text" id="emp_emergency_contact" placeholder="Emergency phone">
+        </div>
+        <div class="inputGroup">
+            <label>Emergency Contact Name</label>
+            <input type="text" id="emp_emergency_name" placeholder="Emergency contact person">
+        </div>
+        <div class="inputGroup">
+            <label>Department</label>
+            <input type="text" id="emp_department" placeholder="Enter department">
+        </div>
+        <div class="inputGroup">
+            <label>Designation</label>
+            <input type="text" id="emp_designation" placeholder="Enter designation">
+        </div>
+        <div class="inputGroup">
+            <label>Join Date</label>
+            <input type="date" id="emp_join_date">
+        </div>
+        <div class="inputGroup">
+            <label>🔑 Login Password *</label>
+            <input type="password" id="emp_password" placeholder="Set password">
+            <small>Minimum 4 characters</small>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closeEmployeeModal()">Cancel</button>
+            <button class="modal-save-btn" onclick="saveEmployee()">💾 Save Employee</button>
+        </div>
+    </div>
+</div>
+    
+    <!-- View Full Image Modal -->
+<div class="modal-overlay" id="viewImageModal" style="display:none;">
+    <div class="modal-box" style="max-width:500px; text-align:center; background:rgba(0,0,0,0.9);">
+        <button class="modal-close" onclick="closeViewImage()" style="color:white; font-size:28px;">✕</button>
+        <div style="padding:20px;">
+            <h3 id="viewImageName" style="color:white; margin-bottom:10px;"></h3>
+            <img id="viewImageSrc" src="" alt="Profile Picture" 
+                 style="max-width:100%; max-height:400px; border-radius:12px; 
+                        border:2px solid rgba(255,255,255,.1);">
+            <div style="margin-top:10px;">
+                <button onclick="closeViewImage()" 
+                        style="padding:10px 30px; border:none; border-radius:12px; 
+                               background:linear-gradient(135deg,#ef4444,#dc2626); 
+                               color:white; font-weight:600; cursor:pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+   <!-- Popup Settings Modal -->
+<div class="modal-overlay" id="popupSettingsModal">
+    <div class="modal-box" style="max-width:520px;">
+        <button class="modal-close" onclick="closePopupSettings()">✕</button>
+        <h2>🎉 Popup Notification</h2>
+        <p>Set popup message for users when they login</p>
+        
+        <!-- ✅ Current Popup Status -->
+        <div id="currentPopupStatus" style="background:rgba(255,255,255,.05); border-radius:10px; padding:12px; margin-bottom:15px; display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <span style="font-size:13px; color:#94a3b8;">📌 Current Popup</span>
+                    <div style="font-size:14px; font-weight:600; color:white;" id="currentPopupTitle">-</div>
+                    <div style="font-size:12px; color:#94a3b8;" id="currentPopupStatusText">Active</div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button onclick="togglePopupStatus()" id="togglePopupBtn" 
+                            style="padding:6px 14px; border:none; border-radius:8px; 
+                                   background:linear-gradient(135deg,#f59e0b,#d97706); 
+                                   color:white; font-weight:600; font-size:11px; cursor:pointer;">
+                        🔄 Toggle
+                    </button>
+                    <button onclick="deletePopup()" 
+                            style="padding:6px 14px; border:none; border-radius:8px; 
+                                   background:linear-gradient(135deg,#ef4444,#dc2626); 
+                                   color:white; font-weight:600; font-size:11px; cursor:pointer;">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Fields -->
+        <div class="inputGroup">
+            <label>Title</label>
+            <input type="text" id="popup_title" placeholder="Enter title">
+        </div>
+        
+        <div class="inputGroup">
+            <label>Message</label>
+            <textarea id="popup_message" rows="4" placeholder="Enter message" style="width:100%; padding:12px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:white; font-size:14px; resize:vertical;"></textarea>
+        </div>
+        
+        <div class="inputGroup">
+            <label>Image (Upload or URL)</label>
+            <input type="text" id="popup_image" placeholder="Enter image URL or upload">
+            <div style="display:flex; gap:6px; margin-top:6px;">
+                <button onclick="document.getElementById('popupFileInput').click()" style="padding:6px 14px; border:none; border-radius:8px; background:rgba(34,197,94,0.2); color:#4ade80; cursor:pointer; font-size:12px;">📁 Upload Image</button>
+                <input type="file" id="popupFileInput" accept="image/*" style="display:none;" onchange="previewPopupImage(event)">
+                <span id="popupImageName" style="font-size:11px; color:#94a3b8; align-self:center;">No file selected</span>
+            </div>
+            <div id="popupImagePreview" style="margin-top:8px; display:none;">
+                <img id="popupPreviewImg" style="max-width:100%; max-height:100px; border-radius:8px;">
+            </div>
+        </div>
+        
+        <!-- Target Users -->
+        <div class="inputGroup" style="margin-bottom:12px;">
+            <label style="display:block; font-size:12px; color:#cbd5e1; font-weight:500; margin-bottom:4px;">👥 Target Users</label>
+            <select id="popup_target_type" onchange="togglePopupTarget()" style="width:100%; padding:10px 14px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:white; font-size:14px; border:1px solid rgba(255,255,255,.05);">
+                <option value="all">📢 All Users</option>
+                <option value="specific">🎯 Specific Users</option>
+            </select>
+        </div>
+        
+        <div id="popup_target_users_container" style="display:none; margin-bottom:12px;">
+            <div class="inputGroup">
+                <label style="display:block; font-size:12px; color:#cbd5e1; font-weight:500; margin-bottom:4px;">Employee IDs (comma separated)</label>
+                <input type="text" id="popup_target_users" placeholder="e.g., FLSD001, FLDM013, FLDM004" style="width:100%; padding:10px 14px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:white; font-size:14px; border:1px solid rgba(255,255,255,.05);">
+                <small style="color:#94a3b8; font-size:10px; display:block; margin-top:4px;">Separate multiple IDs with comma (,)</small>
+            </div>
+        </div>
+        
+        <div class="inputGroup" style="display:flex; gap:10px; align-items:center;">
+            <label style="margin-bottom:0;">Active</label>
+            <input type="checkbox" id="popup_active" checked style="width:auto;">
+        </div>
+        
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closePopupSettings()">Cancel</button>
+            <button class="modal-save-btn" onclick="savePopupSettings()">💾 Save Popup</button>
+        </div>
+    </div>
+</div>
+    
+    
+    
+    
+ 
+    
+    
+    
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+        <h2>⚙️ Change Credentials</h2>
+        <p>Update your admin login username and password</p>
+        <div class="inputGroup">
+            <label>New Username</label>
+            <input type="text" id="newUsername" placeholder="Enter new username" value="front">
+        </div>
+        <div class="inputGroup">
+            <label>Current Password</label>
+            <input type="password" id="currentPassword" placeholder="Enter current password">
+        </div>
+        <div class="inputGroup">
+            <label>New Password</label>
+            <input type="password" id="newPassword" placeholder="Enter new password (optional)">
+        </div>
+        <div class="inputGroup">
+            <label>Confirm New Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password">
+        </div>
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closeSettingsModal()">Cancel</button>
+            <button class="modal-save-btn" onclick="saveSettings()">💾 Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal - Approve/Reject with Name -->
+<div class="modal-overlay" id="reviewModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeReviewModal()">✕</button>
+        <h2 id="reviewModalTitle">✏️ Review Leave</h2>
+        <p id="reviewModalSub">Enter your name to approve or reject this leave</p>
+        <input type="hidden" id="reviewLeaveId" value="">
+        <input type="hidden" id="reviewAction" value="">
+        <div class="inputGroup">
+            <label>👤 Your Name</label>
+            <input type="text" id="reviewAdminName" placeholder="Enter your name (e.g., Taher Boss)">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px; padding:10px; background:rgba(255,255,255,.05); border-radius:10px;">
+            <span style="font-size:13px; color:#94a3b8;">📌 This name will be shown to the employee</span>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-cancel-btn" onclick="closeReviewModal()">Cancel</button>
+            <button class="modal-save-btn" id="reviewSubmitBtn" onclick="submitReview()">✅ Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = "../backend/";
+let allData = [];
+let editingId = null;
+let allFacilities = [];
+let employeeViewVisible = false;
+let attendanceViewVisible = false;
+let leaveViewVisible = false;
+let holidayViewVisible = false;
+let balanceViewVisible = false;
+let reviewLeaveId = null;
+let reviewAction = null;
+
+
+// ============================================
+// RENDER RECOVER REQUESTS - WITH SORTING & FADE
+// ============================================
+function renderRecoverRequests(data) {
+    const tbody = document.getElementById('recoverBody');
+    if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">📭 No recover requests found</td></tr>';
+        return;
+    }
+    
+    // ✅ Sort: Pending first, then Approved, then Rejected
+    data.sort((a, b) => {
+        const statusOrder = { 'pending': 0, 'approved': 1, 'rejected': 2 };
+        return (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
+    });
+    
+    let html = '';
+    data.forEach(r => {
+        let statusClass = 'leave-pending';
+        let statusText = r.status || 'PENDING';
+        let rowOpacity = '1';
+        let rowBg = '';
+        let textColor = '';
+        
+        if(r.status === 'approved') { 
+            statusClass = 'leave-approved'; 
+            statusText = '✅ APPROVED';
+            rowOpacity = '0.5';        // ✅ Fade kora
+            rowBg = 'background:rgba(34,197,94,0.05);';
+            textColor = 'color:#64748b;'; // ✅ Text color kome
+        }
+        else if(r.status === 'rejected') { 
+            statusClass = 'leave-rejected'; 
+            statusText = '❌ REJECTED';
+            rowOpacity = '0.4';
+            rowBg = 'background:rgba(239,68,68,0.05);';
+            textColor = 'color:#64748b;';
+        }
+        
+        let actionHtml = '';
+        if(r.status === 'pending') {
+            actionHtml = `
+                <button class="action-btn approveBtn" onclick="approveRecover(${r.id})" title="Approve">✅</button>
+                <button class="action-btn rejectBtn" onclick="rejectRecover(${r.id})" title="Reject">❌</button>
+            `;
+        } else {
+            actionHtml = `<span style="color:#94a3b8; font-size:11px;">${r.reviewed_by ? 'By: ' + r.reviewed_by : ''}</span>`;
+        }
+        
+        html += `
+        <tr style="opacity: ${rowOpacity}; ${rowBg} ${textColor} transition: all 0.5s ease;">
+            <td>${r.facility_date || r.created_at ? r.created_at.split(' ')[0] : '-'}</td>
+            <td><strong>${r.name || r.emp_id}</strong></td>
+            <td>${r.emp_id}</td>
+            <td>${r.facility_name || '-'}</td>
+            <td>${r.facility_duration || 0} min</td>
+            <td style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.reason || '-'}</td>
+            <td><span class="leave-status ${statusClass}">${statusText}</span></td>
+            <td style="min-width:80px;">${actionHtml}</td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+    
+  // ============================================
+// LOAD RECOVER REQUESTS
+// ============================================
+async function loadRecoverRequests() {
+    console.log("🔵 Loading recover requests...");
+    
+    const tbody = document.getElementById('recoverBody');
+    if(!tbody) {
+        console.error("❌ recoverBody element not found!");
+        return;
+    }
+    
+    try {
+        const url = API + 'recover/get_all.php?t=' + Date.now();
+        console.log("🔵 URL:", url);
+        
+        const res = await fetch(url, {
+            headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+        });
+        
+        if(!res.ok) {
+            throw new Error('HTTP ' + res.status);
+        }
+        
+        const data = await res.json();
+        console.log("🔵 Data received:", data);
+        
+        if(data.error) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#f87171;">❌ ' + data.error + '</td></tr>';
+            return;
+        }
+        
+        if(!Array.isArray(data)) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#f87171;">❌ Invalid data format</td></tr>';
+            return;
+        }
+        
+        if(data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">📭 No recover requests found</td></tr>';
+            updateRecoverStats([]);
+            return;
+        }
+        
+        renderRecoverRequests(data);
+        updateRecoverStats(data);
+        
+    } catch(e) {
+        console.error("❌ Error:", e);
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#f87171;">❌ Failed to load requests: ' + e.message + '</td></tr>';
+    }
+}
+    
+// ============================================
+// UPDATE RECOVER STATS
+// ============================================
+function updateRecoverStats(data) {
+    if(!data) return;
+    
+    let pending = 0, approved = 0, rejected = 0;
+    
+    data.forEach(r => {
+        if(r.status === 'pending') pending++;
+        else if(r.status === 'approved') approved++;
+        else if(r.status === 'rejected') rejected++;
+    });
+    
+    // Update stats display
+    const pendingEl = document.getElementById('recoverPending');
+    const approvedEl = document.getElementById('recoverApproved');
+    const rejectedEl = document.getElementById('recoverRejected');
+    const totalEl = document.getElementById('recoverTotal');
+    
+    if(pendingEl) pendingEl.textContent = pending;
+    if(approvedEl) approvedEl.textContent = approved;
+    if(rejectedEl) rejectedEl.textContent = rejected;
+    if(totalEl) totalEl.textContent = data.length;
+}
+    
+  // ============================================
+// RENDER RECOVER REQUESTS
+// ============================================
+function renderRecoverRequests(data) {
+    const tbody = document.getElementById('recoverBody');
+    if(!tbody) return;
+    
+    if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">📭 No recover requests found</td></tr>';
+        return;
+    }
+    
+    // ✅ Sort: Pending first, then Approved, then Rejected
+    data.sort((a, b) => {
+        const statusOrder = { 'pending': 0, 'approved': 1, 'rejected': 2 };
+        return (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
+    });
+    
+    let html = '';
+    data.forEach(r => {
+        let statusClass = 'leave-pending';
+        let statusText = r.status || 'PENDING';
+        let rowOpacity = '1';
+        let rowBg = '';
+        
+        if(r.status === 'approved') { 
+            statusClass = 'leave-approved'; 
+            statusText = '✅ APPROVED';
+            rowOpacity = '0.5';
+            rowBg = 'background:rgba(34,197,94,0.05);';
+        }
+        else if(r.status === 'rejected') { 
+            statusClass = 'leave-rejected'; 
+            statusText = '❌ REJECTED';
+            rowOpacity = '0.4';
+            rowBg = 'background:rgba(239,68,68,0.05);';
+        }
+        
+        let actionHtml = '';
+        if(r.status === 'pending') {
+            actionHtml = `
+                <button class="action-btn approveBtn" onclick="approveRecover(${r.id})" title="Approve">✅</button>
+                <button class="action-btn rejectBtn" onclick="rejectRecover(${r.id})" title="Reject">❌</button>
+            `;
+        } else {
+            actionHtml = `<span style="color:#94a3b8; font-size:11px;">${r.reviewed_by ? 'By: ' + r.reviewed_by : ''}</span>`;
+        }
+        
+        html += `
+        <tr style="opacity: ${rowOpacity}; ${rowBg} transition: all 0.5s ease;">
+            <td>${r.facility_date || r.created_at ? r.created_at.split(' ')[0] : '-'}</td>
+            <td><strong>${r.name || r.emp_id}</strong></td>
+            <td>${r.emp_id}</td>
+            <td>${r.facility_name || '-'}</td>
+            <td>${r.facility_duration || 0} min</td>
+            <td style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.reason || '-'}</td>
+            <td><span class="leave-status ${statusClass}">${statusText}</span></td>
+            <td style="min-width:80px;">${actionHtml}</td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+    
+
+    // ============================================
+// APPROVE RECOVER - FIXED
+// ============================================
+async function approveRecover(id) {
+    if(!confirm('✅ Approve this recover request?')) return;
+    
+    try {
+        console.log("🔵 Approving recover ID:", id);
+        
+        const res = await fetch(API + 'recover/update.php', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({ id: id, status: 'approved' })
+        });
+        
+        console.log("🔵 Response status:", res.status);
+        
+        // ✅ Check if response is ok
+        if(!res.ok) {
+            const text = await res.text();
+            console.error("❌ Response text:", text);
+            alert('❌ Server error: ' + res.status);
+            return;
+        }
+        
+        // ✅ Try to parse JSON
+        let result;
+        try {
+            result = await res.json();
+        } catch(e) {
+            console.error("❌ JSON parse error:", e);
+            const text = await res.text();
+            console.error("❌ Raw response:", text);
+            alert('❌ Invalid response from server: ' + text.substring(0, 100));
+            return;
+        }
+        
+        console.log("🔵 Result:", result);
+        
+        if(result.success) {
+            showNotification('✅ ' + result.message);
+            loadRecoverRequests();
+            // ✅ Also reload records table if needed
+            if(typeof loadRecords === 'function') loadRecords();
+        } else {
+            alert('❌ ' + (result.message || 'Failed to approve'));
+        }
+    } catch(e) {
+        console.error("❌ Error:", e);
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// REJECT RECOVER - FIXED
+// ============================================
+async function rejectRecover(id) {
+    if(!confirm('❌ Reject this recover request?')) return;
+    
+    try {
+        console.log("🔵 Rejecting recover ID:", id);
+        
+        const res = await fetch(API + 'recover/update.php', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({ id: id, status: 'rejected' })
+        });
+        
+        console.log("🔵 Response status:", res.status);
+        
+        if(!res.ok) {
+            const text = await res.text();
+            console.error("❌ Response text:", text);
+            alert('❌ Server error: ' + res.status);
+            return;
+        }
+        
+        let result;
+        try {
+            result = await res.json();
+        } catch(e) {
+            console.error("❌ JSON parse error:", e);
+            const text = await res.text();
+            console.error("❌ Raw response:", text);
+            alert('❌ Invalid response from server: ' + text.substring(0, 100));
+            return;
+        }
+        
+        console.log("🔵 Result:", result);
+        
+        if(result.success) {
+            showNotification('✅ ' + result.message);
+            loadRecoverRequests();
+            if(typeof loadRecords === 'function') loadRecords();
+        } else {
+            alert('❌ ' + (result.message || 'Failed to reject'));
+        }
+    } catch(e) {
+        console.error("❌ Error:", e);
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+    
+    
+    
+// ✅ Recover Search Event Listener
+document.addEventListener('DOMContentLoaded', function() {
+    const recoverSearch = document.getElementById('recoverSearch');
+    if(recoverSearch) {
+        recoverSearch.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#recoverBody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(value) ? '' : 'none';
+            });
+        });
+    }
+});
+    
+
+// ============================================
+// ADMIN TAB NAVIGATION
+// ============================================
+function showAdminTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+    
+    const clickedTab = document.querySelector(`.admin-tab[onclick="showAdminTab('${tab}')"]`);
+    if(clickedTab) clickedTab.classList.add('active');
+    
+    const content = document.getElementById('admin-' + tab);
+    if(content) content.classList.add('active');
+}
+
+// ============================================
+// DOWNLOAD ATTENDANCE PDF
+// ============================================
+// ============================================
+// DOWNLOAD ATTENDANCE PDF - FIXED
+// ============================================
+function downloadAttendancePDF() {
+    console.log("📄 downloadAttendancePDF called");
+    
+    // Get month select
+    var monthSelect = document.getElementById('attendanceFilterMonth');
+    console.log("📄 Month Select Element:", monthSelect);
+    
+    if(!monthSelect) {
+        alert('❌ Month selector not found! Please refresh the page.');
+        return;
+    }
+    
+    var monthValue = monthSelect.value;
+    console.log("📄 Month Value:", monthValue);
+    
+    if(!monthValue) {
+        alert('⚠️ Please select a month first!');
+        return;
+    }
+    
+    // Build URL
+    var url = '../backend/user/export_attendance_pdf.php?month=' + monthValue + '&t=' + Date.now();
+    console.log("📄 Final URL:", url);
+    
+    // Show notification
+    showNotification('⏳ Generating attendance PDF...');
+    
+    // Open in new tab
+    var newWindow = window.open(url, '_blank');
+    
+    if(!newWindow) {
+        alert('⚠️ Popup blocked! Please allow popups or click the link:\n\n' + url);
+        return;
+    }
+    
+    setTimeout(function() {
+        showNotification('✅ PDF download started!');
+    }, 2000);
+}
+
+// ============================================
+// HOLIDAY CONFIG
+// ============================================
+let holidayConfig = [];
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+function calculateDuration(start, end){
+    if(!start || !end) return 0;
+    let s = new Date("1970-01-01T" + start + ":00");
+    let e = new Date("1970-01-01T" + end + ":00");
+    let diff = (e - s) / 60000;
+    return diff > 0 ? diff : 0;
+}
+    
+    
+    // ============================================
+// POPUP TARGET - ADMIN
+// ============================================
+
+function togglePopupTarget() {
+    const type = document.getElementById('popup_target_type').value;
+    const container = document.getElementById('popup_target_users_container');
+    
+    if(type === 'specific') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+    }
+}
+
+async function savePopupSettings() {
+    const title = document.getElementById('popup_title').value.trim();
+    const message = document.getElementById('popup_message').value.trim();
+    const image = document.getElementById('popup_image').value.trim();
+    const is_active = document.getElementById('popup_active').checked ? 1 : 0;
+    const target_type = document.getElementById('popup_target_type').value;
+    const target_users = document.getElementById('popup_target_users').value.trim();
+    
+    if(!title || !message) {
+        alert('⚠️ Please enter title and message');
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'popup/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                title, 
+                message, 
+                image, 
+                is_active,
+                target_type,
+                target_users
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closePopupSettings();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============= TOGGLE VIEWS =============
+function toggleEmployeeView() {
+    const section = document.getElementById('employeeSection');
+    if(employeeViewVisible) {
+        section.style.display = 'none';
+        employeeViewVisible = false;
+    } else {
+        section.style.display = 'block';
+        employeeViewVisible = true;
+        loadEmployees();
+    }
+}
+
+function toggleAttendanceView() {
+    const section = document.getElementById('attendanceSection');
+    if(attendanceViewVisible) {
+        section.style.display = 'none';
+        attendanceViewVisible = false;
+    } else {
+        section.style.display = 'block';
+        attendanceViewVisible = true;
+        loadAttendanceRecords();
+    }
+}
+
+function toggleLeaveView() {
+    const section = document.getElementById('leaveSection');
+    if(leaveViewVisible) {
+        section.style.display = 'none';
+        leaveViewVisible = false;
+    } else {
+        section.style.display = 'block';
+        leaveViewVisible = true;
+        loadLeaveRequests();
+    }
+}
+
+function toggleHolidayView() {
+    const section = document.getElementById('holidaySection');
+    if(holidayViewVisible) {
+        section.style.display = 'none';
+        holidayViewVisible = false;
+    } else {
+        section.style.display = 'block';
+        holidayViewVisible = true;
+        loadHolidaySettings();
+    }
+}
+
+function toggleBalanceView() {
+    const section = document.getElementById('balanceSection');
+    if(balanceViewVisible) {
+        section.style.display = 'none';
+        balanceViewVisible = false;
+    } else {
+        section.style.display = 'block';
+        balanceViewVisible = true;
+        loadBalanceData();
+    }
+}
+
+// ============= LOAD FACILITIES =============
+async function loadFacilities() {
+    try {
+        const res = await fetch(API + 'get_facilities.php');
+        const data = await res.json();
+        allFacilities = data;
+        const select = document.getElementById('facility');
+        select.innerHTML = '<option value="">Select Facility</option>';
+        data.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f.name_bn;
+            opt.textContent = f.name_bn;
+            select.appendChild(opt);
+        });
+    } catch(e) { console.error("Error loading facilities:", e); }
+}
+
+// ============= ADD FACILITY =============
+function openAddFacilityModal() {
+    document.getElementById('addFacilityModal').style.display = 'flex';
+    document.getElementById('newFacilityBn').value = '';
+    document.getElementById('newFacilityEn').value = '';
+}
+function closeAddFacilityModal() {
+    document.getElementById('addFacilityModal').style.display = 'none';
+}
+async function saveNewFacility() {
+    const name_bn = document.getElementById('newFacilityBn').value.trim();
+    const name_en = document.getElementById('newFacilityEn').value.trim().toLowerCase().replace(/\s+/g, '_');
+    if (!name_bn) { alert('Please enter facility name in Bangla'); return; }
+    if (!name_en) { alert('Please enter facility name in English'); return; }
+    if (!/^[a-z_]+$/.test(name_en)) {
+        alert('English name should contain only lowercase letters and underscores');
+        return;
+    }
+    try {
+        const res = await fetch(API + 'add_facility.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ name_bn, name_en })
+        });
+        const result = await res.json();
+        if (result.success) {
+            alert('✅ ' + result.message);
+            closeAddFacilityModal();
+            loadFacilities();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) { alert('❌ Error: ' + e.message); }
+}
+
+// ============= LOGIN =============
+async function login(){
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    if(!username || !password){ alert("Please enter username and password"); return; }
+    try {
+        const res = await fetch(API + 'login.php',{
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            credentials:'include',
+            body:JSON.stringify({ username, password })
+        });
+        const text = await res.text();
+        if(text.trim() === "OK"){
+            document.getElementById('loginScreen').style.display = "none";
+            document.getElementById('mainPanel').classList.remove('hidden');
+            loadFacilities();
+            loadRecords();
+            loadSchedule();
+            loadAttendanceRecords();
+            loadLeaveRequests();
+            loadHolidaySettings();
+              loadHolidayAutoSettings(); 
+            loadBalanceData();
+            populateMonthSelects();
+            populateAttendanceMonthSelect();
+        }else{ alert("Wrong username or password"); }
+    } catch(e) { alert("Login error: " + e.message); }
+}
+function logout(){ location.reload(); }
+    
+    
+    
+    
+    
+    // ============================================
+// POPUP SETTINGS - ADMIN
+// ============================================
+
+
+// ============================================
+// OPEN POPUP SETTINGS - FIXED
+// ============================================
+async function openPopupSettings() {
+    document.getElementById('popupSettingsModal').style.display = 'flex';
+    
+    try {
+        // ✅ Get ALL popups (not just active)
+        const res = await fetch(API + 'popup/get_all.php?t=' + Date.now(), {
+            headers: { 'Cache-Control': 'no-cache' }
+        });
+        
+        if(!res.ok) {
+            console.error('API Error:', res.status);
+            return;
+        }
+        
+        const data = await res.json();
+        console.log('All Popups:', data);
+        
+        if(data.success && data.popups && data.popups.length > 0) {
+            // ✅ Show latest popup
+            const popup = data.popups[0];
+            currentPopupId = popup.id;
+            currentPopupActive = popup.is_active === 1;
+            
+            document.getElementById('popup_title').value = popup.title || '';
+            document.getElementById('popup_message').value = popup.message || '';
+            document.getElementById('popup_image').value = popup.image || '';
+            document.getElementById('popup_active').checked = popup.is_active === 1;
+            document.getElementById('popup_target_type').value = popup.target_type || 'all';
+            document.getElementById('popup_target_users').value = popup.target_users || '';
+            
+            // Show current status
+            const statusDiv = document.getElementById('currentPopupStatus');
+            statusDiv.style.display = 'block';
+            document.getElementById('currentPopupTitle').textContent = popup.title || 'Untitled';
+            
+            const statusText = document.getElementById('currentPopupStatusText');
+            if(popup.is_active === 1) {
+                statusText.textContent = '✅ Active';
+                statusText.style.color = '#4ade80';
+                document.getElementById('togglePopupBtn').textContent = '⏸️ Deactivate';
+            } else {
+                statusText.textContent = '⛔ Inactive';
+                statusText.style.color = '#f87171';
+                document.getElementById('togglePopupBtn').textContent = '▶️ Activate';
+            }
+        } else {
+            // No popup found
+            const statusDiv = document.getElementById('currentPopupStatus');
+            statusDiv.style.display = 'none';
+            
+            document.getElementById('popup_title').value = '';
+            document.getElementById('popup_message').value = '';
+            document.getElementById('popup_image').value = '';
+            document.getElementById('popup_active').checked = true;
+            document.getElementById('popup_target_type').value = 'all';
+            document.getElementById('popup_target_users').value = '';
+            
+            currentPopupId = null;
+            currentPopupActive = false;
+        }
+    } catch(e) {
+        console.error('Error loading popups:', e);
+    }
+}
+    
+    
+function closePopupSettings() {
+    document.getElementById('popupSettingsModal').style.display = 'none';
+}
+
+// ✅ Toggle Popup Status (Active/Inactive)
+async function togglePopupStatus() {
+    if(!currentPopupId) {
+        alert('⚠️ No popup found to toggle');
+        return;
+    }
+    
+    const newStatus = currentPopupActive ? 0 : 1;
+    const action = newStatus === 1 ? 'Activate' : 'Deactivate';
+    
+    if(!confirm(`Are you sure you want to ${action} this popup?`)) {
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'popup/toggle.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                id: currentPopupId, 
+                is_active: newStatus 
+            })
+        });
+        const result = await res.json();
+        
+        if(result.success) {
+            alert('✅ ' + result.message);
+            currentPopupActive = newStatus === 1;
+            
+            // Update status display
+            const statusText = document.getElementById('currentPopupStatusText');
+            const toggleBtn = document.getElementById('togglePopupBtn');
+            
+            if(currentPopupActive) {
+                statusText.textContent = '✅ Active';
+                statusText.style.color = '#4ade80';
+                toggleBtn.textContent = '⏸️ Deactivate';
+            } else {
+                statusText.textContent = '⛔ Inactive';
+                statusText.style.color = '#f87171';
+                toggleBtn.textContent = '▶️ Activate';
+            }
+            
+            // Update checkbox
+            document.getElementById('popup_active').checked = currentPopupActive;
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ✅ Delete Popup
+async function deletePopup() {
+    if(!currentPopupId) {
+        alert('⚠️ No popup found to delete');
+        return;
+    }
+    
+    if(!confirm('⚠️ Are you sure you want to PERMANENTLY DELETE this popup? This cannot be undone!')) {
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'popup/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: currentPopupId })
+        });
+        const result = await res.json();
+        
+        if(result.success) {
+            alert('✅ ' + result.message);
+            currentPopupId = null;
+            currentPopupActive = false;
+            document.getElementById('currentPopupStatus').style.display = 'none';
+            document.getElementById('popup_title').value = '';
+            document.getElementById('popup_message').value = '';
+            document.getElementById('popup_image').value = '';
+            document.getElementById('popup_active').checked = true;
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ✅ Save Popup
+async function savePopupSettings() {
+    const title = document.getElementById('popup_title').value.trim();
+    const message = document.getElementById('popup_message').value.trim();
+    const image = document.getElementById('popup_image').value.trim();
+    const is_active = document.getElementById('popup_active').checked ? 1 : 0;
+    const target_type = document.getElementById('popup_target_type').value;
+    const target_users = document.getElementById('popup_target_users').value.trim();
+    
+    if(!title || !message) {
+        alert('⚠️ Please enter title and message');
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'popup/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                title, 
+                message, 
+                image, 
+                is_active,
+                target_type,
+                target_users,
+                id: currentPopupId || 0
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closePopupSettings();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+    // ✅ Preview uploaded image
+function previewPopupImage(event) {
+    const file = event.target.files[0];
+    if(!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('popupImagePreview');
+        const img = document.getElementById('popupPreviewImg');
+        img.src = e.target.result;
+        preview.style.display = 'block';
+        document.getElementById('popupImageName').textContent = file.name;
+        
+        // ✅ Store base64 for upload
+        document.getElementById('popup_image').value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function closePopupSettings() {
+    document.getElementById('popupSettingsModal').style.display = 'none';
+}
+
+async function savePopupSettings() {
+    const title = document.getElementById('popup_title').value.trim();
+    const message = document.getElementById('popup_message').value.trim();
+    const image = document.getElementById('popup_image').value.trim();
+    const is_active = document.getElementById('popup_active').checked ? 1 : 0;
+    
+    if(!title || !message) {
+        alert('⚠️ Please enter title and message');
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'popup/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, message, image, is_active })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closePopupSettings();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}    
+    
+    
+
+// ============= SETTINGS =============
+function openSettingsModal(){
+    document.getElementById('settingsModal').style.display = 'flex';
+    document.getElementById('newUsername').value = 'front';
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+}
+function closeSettingsModal(){
+    document.getElementById('settingsModal').style.display = 'none';
+}
+async function saveSettings(){
+    const newUsername = document.getElementById('newUsername').value.trim();
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    if(!newUsername || newUsername.length < 3){ alert("Username must be at least 3 characters"); return; }
+    if(!currentPassword){ alert("Please enter your current password"); return; }
+    if(newPassword && newPassword.length < 4){ alert("New password must be at least 4 characters"); return; }
+    if(newPassword !== confirmPassword){ alert("New password and confirm password do not match"); return; }
+    try {
+        const res = await fetch(API + 'change_credentials.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                new_username: newUsername,
+                current_password: currentPassword,
+                new_password: newPassword || currentPassword
+            })
+        });
+        const result = await res.json();
+        if(result.success){
+            alert("✅ " + result.message);
+            closeSettingsModal();
+            document.getElementById('username').value = newUsername;
+            document.getElementById('password').value = newPassword || currentPassword;
+        } else { alert("❌ " + result.message); }
+    } catch(e) { alert("❌ Error: " + e.message); }
+}
+
+// ============= CRUD =============
+async function saveRecord(){
+    const duration = calculateDuration(
+        document.getElementById('start_time').value,
+        document.getElementById('end_time').value
+    );
+    const data = {
+        date: document.getElementById('date').value,
+        name: document.getElementById('name').value,
+        empid: document.getElementById('empid').value,
+        facility: document.getElementById('facility').value,
+        start_time: document.getElementById('start_time').value,
+        end_time: document.getElementById('end_time').value,
+        duration: duration,
+        note: document.getElementById('note').value
+    };
+    if(!data.name || !data.empid || !data.facility){ alert("Please fill in all required fields"); return; }
+    try {
+        const res = await fetch(API + 'save.php',{
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            credentials:'include',
+            body:JSON.stringify(data)
+        });
+        alert(await res.text());
+        loadRecords();
+        clearForm();
+    } catch(e) { alert("Error: " + e.message); }
+}
+
+async function updateRecord(){
+    const duration = calculateDuration(
+        document.getElementById('start_time').value,
+        document.getElementById('end_time').value
+    );
+    const data = {
+        id: document.getElementById('editId').value,
+        date: document.getElementById('date').value,
+        name: document.getElementById('name').value,
+        empid: document.getElementById('empid').value,
+        facility: document.getElementById('facility').value,
+        start_time: document.getElementById('start_time').value,
+        end_time: document.getElementById('end_time').value,
+        duration: duration,
+        note: document.getElementById('note').value
+    };
+    if(!data.name || !data.empid || !data.facility){ alert("Please fill in all required fields"); return; }
+    try {
+        const res = await fetch(API + 'update.php',{
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            credentials:'include',
+            body:JSON.stringify(data)
+        });
+        alert(await res.text());
+        loadRecords();
+        cancelEdit();
+    } catch(e) { alert("Error: " + e.message); }
+}
+
+function cancelEdit(){
+    editingId = null;
+    document.getElementById('editId').value = '';
+    document.getElementById('formTitle').innerHTML = '➕ Add Record';
+    document.getElementById('formSubtitle').innerHTML = 'Create new employee facility record';
+    document.getElementById('saveBtn').style.display = 'block';
+    document.getElementById('updateBtn').style.display = 'none';
+    document.getElementById('cancelBtn').style.display = 'none';
+    clearForm();
+}
+
+function clearForm(){
+    document.getElementById('name').value = '';
+    document.getElementById('empid').value = '';
+    document.getElementById('start_time').value = '';
+    document.getElementById('end_time').value = '';
+    document.getElementById('note').value = '';
+    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('facility').value = '';
+}
+
+function editRecord(id){
+    const record = allData.find(r => r.id == id);
+    if(!record) {
+        alert("Record not found!");
+        return;
+    }
+    document.getElementById('editId').value = id;
+    document.getElementById('date').value = record.date;
+    document.getElementById('name').value = record.name;
+    document.getElementById('empid').value = record.emp_id;
+    document.getElementById('facility').value = record.facility;
+    document.getElementById('start_time').value = record.start_time || '';
+    document.getElementById('end_time').value = record.end_time || '';
+    document.getElementById('note').value = record.note || '';
+    document.getElementById('formTitle').innerHTML = '✏️ Edit Record';
+    document.getElementById('formSubtitle').innerHTML = 'Update employee facility record';
+    document.getElementById('saveBtn').style.display = 'none';
+    document.getElementById('updateBtn').style.display = 'block';
+    document.getElementById('cancelBtn').style.display = 'block';
+}
+
+// ============================================
+// LOAD RECORDS - WITH RECOVER STATUS
+// ============================================
+async function loadRecords(){
+    let month = document.getElementById('monthSelect').value;
+    let url = API + 'get.php';
+    if(month) url += '?month=' + month;
+    
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        allData = data;
+        renderTable(allData);
+    } catch(e) { 
+        console.error("Load error:", e); 
+    }
+}
+
+async function deleteRecord(id){
+    if(!confirm("Delete this record?")) return;
+    try {
+        const res = await fetch(API + 'delete.php?id=' + id,{ credentials:'include' });
+        alert(await res.text());
+        loadRecords();
+    } catch(e) { alert("Error: " + e.message); }
+}
+
+function exportExcel(){
+    let month = document.getElementById('monthSelect').value;
+    if(!month) { alert("Please select a month first!"); return; }
+    window.open(API + 'export_excel.php?month=' + month, '_blank');
+}
+
+function getFacilityClass(type){
+    if(!type) return 'purple';
+    if(type.includes('ছুটি')) return 'green';
+    if(type.includes('এক্সট্রা')) return 'blue';
+    if(type.includes('আগে')) return 'orange';
+    if(type.includes('পরীক্ষা')) return 'purple';
+    return 'purple';
+}
+
+
+    
+    
+ // ============================================
+// RENDER TABLE - WITH RECOVER STATUS & COLOR
+// ============================================
+function renderTable(data){
+    let html = "";
+    if(!data || data.length === 0){
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#64748b;">📭 No records found</td></tr>';
+        return;
+    }
+    
+    // ✅ Sort: Recovered records go to bottom
+    data.sort((a, b) => {
+        const aRecovered = a.recovered || 0;
+        const bRecovered = b.recovered || 0;
+        return aRecovered - bRecovered;
+    });
+    
+    data.forEach(r => {
+        let priorityText = r.priority || 'Neutral';
+        let priorityClass = '';
+        if(priorityText == 'High') priorityClass = 'priority-high';
+        else if(priorityText == 'Neutral') priorityClass = 'priority-neutral';
+        else priorityClass = 'priority-low';
+        
+        // ✅ Check if recovered
+        let isRecovered = r.recovered && r.recovered == 1;
+        
+        // ✅ Row styles for recovered
+        let rowStyles = '';
+        let nameStyles = '';
+        let recoveredBadge = '';
+        
+        if(isRecovered) {
+            rowStyles = `
+                opacity: 0.5;
+                background: rgba(34,197,94,0.05);
+                transition: all 0.5s ease;
+                color: #94a3b8;
+            `;
+            nameStyles = 'color: #94a3b8;';
+            recoveredBadge = `
+                <span style="
+                    background: rgba(34,197,94,0.15);
+                    color: #4ade80;
+                    font-size: 9px;
+                    padding: 2px 10px;
+                    border-radius: 50px;
+                    margin-left: 6px;
+                    font-weight: 600;
+                    border: 1px solid rgba(34,197,94,0.2);
+                ">
+                    ✅ Recovered
+                </span>
+            `;
+        }
+        
+        html += `
+        <tr style="${rowStyles}">
+            <td style="${isRecovered ? 'color:#94a3b8;' : ''}">${r.date}</td>
+            <td>
+                <strong style="${nameStyles}">${r.name}</strong>
+                ${recoveredBadge}
+            </td>
+            <td style="${isRecovered ? 'color:#94a3b8;' : ''}">${r.emp_id}</td>
+            <td>
+                <span class="facility ${getFacilityClass(r.facility)}" style="${isRecovered ? 'opacity:0.5;' : ''}">
+                    ${r.facility || '-'}
+                </span>
+            </td>
+            <td style="${isRecovered ? 'color:#94a3b8;' : ''}">
+                ${r.start_time || '-'} → ${r.end_time || '-'}
+                <br>
+                <small style="color:${isRecovered ? '#94a3b8' : '#94a3b8'}; font-size:10px;">
+                    ${r.duration || 0} min
+                </small>
+            </td>
+            <td>
+                <span class="priority-badge ${priorityClass}" style="${isRecovered ? 'opacity:0.5;' : ''}">
+                    ${priorityText}
+                </span>
+            </td>
+            <td style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; ${isRecovered ? 'color:#94a3b8;' : ''}">
+                ${r.note || '-'}
+            </td>
+            <td>
+                <button class="action-btn editBtn" onclick="editRecord(${r.id})" style="${isRecovered ? 'opacity:0.5;' : ''}">✏️</button>
+                <button class="action-btn deleteBtn" onclick="deleteRecord(${r.id})" style="${isRecovered ? 'opacity:0.5;' : ''}">🗑️</button>
+            </td>
+        </tr>
+        `;
+    });
+    document.getElementById('tableBody').innerHTML = html;
+}
+    
+    // ============================================
+// REQUEST RECOVER FROM TABLE (Admin)
+// ============================================
+async function requestRecoverFromTable(facilityId) {
+    if(!confirm('Send recover request for this facility?')) return;
+    
+    const reason = prompt('📝 Reason for recover request:');
+    if(reason === null) return;
+    
+    try {
+        const res = await fetch(API + 'recover/request.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                facility_id: facilityId,
+                reason: reason || 'Requested by Admin'
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadRecords();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// APPROVE RECOVER FROM TABLE (Admin)
+// ============================================
+async function approveRecoverFromTable(facilityId) {
+    if(!confirm('✅ Approve this recover request?')) return;
+    
+    try {
+        // First get the recover request ID
+        const res = await fetch(API + 'recover/get_by_facility.php?facility_id=' + facilityId);
+        const data = await res.json();
+        
+        if(!data.success || !data.id) {
+            alert('❌ Recover request not found');
+            return;
+        }
+        
+        const recoverId = data.id;
+        
+        const updateRes = await fetch(API + 'recover/update.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: recoverId, status: 'approved' })
+        });
+        const result = await updateRes.json();
+        
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadRecords();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// REJECT RECOVER FROM TABLE (Admin)
+// ============================================
+async function rejectRecoverFromTable(facilityId) {
+    if(!confirm('❌ Reject this recover request?')) return;
+    
+    try {
+        const res = await fetch(API + 'recover/get_by_facility.php?facility_id=' + facilityId);
+        const data = await res.json();
+        
+        if(!data.success || !data.id) {
+            alert('❌ Recover request not found');
+            return;
+        }
+        
+        const recoverId = data.id;
+        
+        const updateRes = await fetch(API + 'recover/update.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: recoverId, status: 'rejected' })
+        });
+        const result = await updateRes.json();
+        
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadRecords();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+    
+// ============= EMPLOYEE MANAGEMENT =============
+async function loadEmployees() {
+    try {
+        const res = await fetch(API + 'employee/employee_get.php');
+        const data = await res.json();
+        renderEmployees(data);
+        updateStats(data);
+    } catch(e) {
+        console.error("Error loading employees:", e);
+        document.getElementById('employeeGrid').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8;">❌ Failed to load employees</div>';
+    }
+}
+
+function updateStats(data) {
+    if(!data) return;
+    document.getElementById('totalEmployees').textContent = data.length;
+    let a=0,b=0,ab=0,o=0;
+    data.forEach(r => {
+        if(r.blood_group === 'A+') a++;
+        else if(r.blood_group === 'B+') b++;
+        else if(r.blood_group === 'AB+') ab++;
+        else if(r.blood_group === 'O+') o++;
+    });
+    document.getElementById('bloodA').textContent = a;
+    document.getElementById('bloodB').textContent = b;
+    document.getElementById('bloodAB').textContent = ab;
+    document.getElementById('bloodO').textContent = o;
+}
+    
+    // ============================================
+// VIEW FULL IMAGE
+// ============================================
+
+function viewFullImage(imageUrl, name) {
+    const modal = document.getElementById('viewImageModal');
+    const img = document.getElementById('viewImageSrc');
+    const title = document.getElementById('viewImageName');
+    
+    if(imageUrl) {
+        img.src = imageUrl;
+        img.style.display = 'block';
+        title.textContent = '📸 ' + name;
+    } else {
+        img.style.display = 'none';
+        title.textContent = '⚠️ No profile picture for ' + name;
+    }
+    
+    modal.style.display = 'flex';
+}
+
+function closeViewImage() {
+    document.getElementById('viewImageModal').style.display = 'none';
+}
+    
+    
+
+function renderEmployees(data) {
+    const grid = document.getElementById('employeeGrid');
+    if(!data || data.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:30px; color:#94a3b8;">👥 No employees found</div>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach(r => {
+        let bloodClass = '';
+        if(r.blood_group) {
+            if(r.blood_group.includes('A')) bloodClass = 'blood-a';
+            else if(r.blood_group.includes('B')) bloodClass = 'blood-b';
+            else if(r.blood_group.includes('AB')) bloodClass = 'blood-ab';
+            else bloodClass = 'blood-o';
+        }
+        
+        // ✅ Use profile_picture_url from API
+        const hasPic = r.profile_picture_url ? true : false;
+        const initials = r.name ? r.name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase() : '??';
+        
+        html += `
+        <div class="employee-card">
+            <div class="emp-header">
+                <div class="emp-name">${r.name}</div>
+                <div class="emp-id">${r.emp_id}</div>
+            </div>
+            
+            <div style="display:flex; justify-content:center; margin-bottom:10px;">
+                <div onclick="viewFullImage('${hasPic ? r.profile_picture_url : ''}', '${r.name}')" 
+                     style="width:70px; height:70px; border-radius:50%; 
+                            background:${hasPic ? 'url(' + r.profile_picture_url + ')' : 'linear-gradient(135deg,#8b5cf6,#3b82f6)'};
+                            background-size:cover; background-position:center;
+                            display:flex; align-items:center; justify-content:center;
+                            font-weight:700; font-size:22px; color:white;
+                            border:3px solid ${hasPic ? '#4ade80' : 'rgba(255,255,255,.1)'};
+                            cursor:pointer; transition:0.3s;
+                            box-shadow:0 4px 15px rgba(0,0,0,0.2);"
+                     onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 25px rgba(139,92,246,0.4)'" 
+                     onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)'">
+                    ${!hasPic ? initials : ''}
+                </div>
+            </div>
+            
+            <div class="emp-details">
+                <span>📧 ${r.email || '-'}</span>
+                <span>📱 ${r.phone || '-'}</span>
+                <span>🏠 ${r.address || '-'}</span>
+                <span>🩸 ${r.blood_group ? `<span class="blood-badge ${bloodClass}">${r.blood_group}</span>` : '-'}</span>
+                <span>🏢 ${r.department || '-'}</span>
+                <span>💼 ${r.designation || '-'}</span>
+                <span style="grid-column:1/-1; color:#64748b; font-size:11px;">📅 Joined: ${r.join_date || '-'}</span>
+                <span style="grid-column:1/-1; color:#64748b; font-size:11px;">🆘 ${r.emergency_name ? r.emergency_name + ' (' + (r.emergency_contact || '-') + ')' : '-'}</span>
+                <span style="grid-column:1/-1; color:#64748b; font-size:11px;">
+                    ${hasPic ? '✅ Profile Picture' : '❌ No Picture'}
+                </span>
+            </div>
+            <div class="emp-actions">
+                <button class="emp-edit-btn" onclick="editEmployee(${r.id})">✏️ Edit</button>
+                <button class="emp-delete-btn" onclick="deleteEmployee(${r.id})">🗑️ Delete</button>
+            </div>
+        </div>
+        `;
+    });
+    grid.innerHTML = html;
+}
+// ============= EMPLOYEE MODAL =============
+function openEmployeeModal() {
+    document.getElementById('employeeModal').style.display = 'flex';
+    document.getElementById('employeeModalTitle').innerHTML = '➕ Add Employee';
+    document.getElementById('employeeModalSub').innerHTML = 'Add new employee with login credentials';
+    document.getElementById('employeeEditId').value = '';
+    document.getElementById('emp_emp_id').value = '';
+    document.getElementById('emp_name').value = '';
+    document.getElementById('emp_email').value = '';
+    document.getElementById('emp_phone').value = '';
+    document.getElementById('emp_address').value = '';
+    document.getElementById('emp_blood_group').value = '';
+    document.getElementById('emp_emergency_contact').value = '';
+    document.getElementById('emp_emergency_name').value = '';
+    document.getElementById('emp_department').value = '';
+    document.getElementById('emp_designation').value = '';
+    document.getElementById('emp_join_date').value = '';
+    document.getElementById('emp_password').value = '';
+}
+
+function closeEmployeeModal() {
+    document.getElementById('employeeModal').style.display = 'none';
+}
+
+async function saveEmployee() {
+    const id = document.getElementById('employeeEditId').value;
+    const password = document.getElementById('emp_password').value.trim();
+    const data = {
+        id: id || 0,
+        emp_id: document.getElementById('emp_emp_id').value.trim(),
+        name: document.getElementById('emp_name').value.trim(),
+        email: document.getElementById('emp_email').value.trim(),
+        phone: document.getElementById('emp_phone').value.trim(),
+        address: document.getElementById('emp_address').value.trim(),
+        blood_group: document.getElementById('emp_blood_group').value,
+        emergency_contact: document.getElementById('emp_emergency_contact').value.trim(),
+        emergency_name: document.getElementById('emp_emergency_name').value.trim(),
+        department: document.getElementById('emp_department').value.trim(),
+        designation: document.getElementById('emp_designation').value.trim(),
+        join_date: document.getElementById('emp_join_date').value
+    };
+    if(!data.emp_id || !data.name) {
+        alert('Employee ID and Name are required');
+        return;
+    }
+    if(!id && !password) {
+        alert('Password is required for new employee');
+        return;
+    }
+    if(password && password.length < 4) {
+        alert('Password must be at least 4 characters');
+        return;
+    }
+    if(password) data.password = password;
+    const url = id ? API + 'employee/employee_update.php' : API + 'employee/employee_save.php';
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closeEmployeeModal();
+            loadEmployees();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+async function editEmployee(id) {
+    try {
+        const res = await fetch(API + 'employee/employee_get_one.php?id=' + id);
+        const result = await res.json();
+        if(result.success) {
+            const data = result.data;
+            document.getElementById('employeeModal').style.display = 'flex';
+            document.getElementById('employeeModalTitle').innerHTML = '✏️ Edit Employee';
+            document.getElementById('employeeModalSub').innerHTML = 'Update employee information (password optional)';
+            document.getElementById('employeeEditId').value = data.id;
+            document.getElementById('emp_emp_id').value = data.emp_id;
+            document.getElementById('emp_name').value = data.name;
+            document.getElementById('emp_email').value = data.email || '';
+            document.getElementById('emp_phone').value = data.phone || '';
+            document.getElementById('emp_address').value = data.address || '';
+            document.getElementById('emp_blood_group').value = data.blood_group || '';
+            document.getElementById('emp_emergency_contact').value = data.emergency_contact || '';
+            document.getElementById('emp_emergency_name').value = data.emergency_name || '';
+            document.getElementById('emp_department').value = data.department || '';
+            document.getElementById('emp_designation').value = data.designation || '';
+            document.getElementById('emp_join_date').value = data.join_date || '';
+            document.getElementById('emp_password').value = '';
+            document.getElementById('emp_password').placeholder = 'Leave blank to keep current password';
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+async function deleteEmployee(id) {
+    if(!confirm('Are you sure you want to delete this employee?')) return;
+    try {
+        const res = await fetch(API + 'employee/employee_delete.php?id=' + id, { credentials: 'include' });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadEmployees();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// ATTENDANCE MANAGEMENT
+// ============================================
+
+function populateAttendanceMonthSelect() {
+    const select = document.getElementById('attendanceFilterMonth');
+    if(!select) return;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    select.innerHTML = '';
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = '📅 All Months';
+    select.appendChild(allOption);
+    for(let year = currentYear; year >= 2024; year--) {
+        for(let month = 12; month >= 1; month--) {
+            const monthStr = String(month).padStart(2, '0');
+            const dateObj = new Date(year, month - 1, 1);
+            const monthName = dateObj.toLocaleString('default', { month: 'short' });
+            const option = document.createElement('option');
+            option.value = year + '-' + monthStr;
+            option.textContent = monthName + ' ' + year;
+            if(year === currentYear && month === currentMonth) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        }
+    }
+}
+
+async function loadAttendanceRecords() {
+    try {
+        const month = document.getElementById('attendanceFilterMonth').value;
+        let url = API + 'user/get_all_attendance.php';
+        if(month) {
+            url += '?month=' + month;
+        }
+        const res = await fetch(url);
+        const data = await res.json();
+        renderAttendance(data);
+        updateAttendanceStats(data);
+    } catch(e) {
+        console.error("Error loading attendance:", e);
+        document.getElementById('attendanceBody').innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">❌ Failed to load attendance records</td></tr>';
+    }
+}
+
+function updateAttendanceStats(data) {
+    if(!data) return;
+    let present = 0, late = 0, absent = 0, leave = 0, holiday = 0;
+    data.forEach(r => {
+        if(r.status === 'present') present++;
+        else if(r.status === 'late') late++;
+        else if(r.status === 'absent') absent++;
+        else if(r.status === 'leave') leave++;
+        else if(r.status === 'holiday') holiday++;
+    });
+    document.getElementById('attPresent').textContent = present;
+    document.getElementById('attLate').textContent = late;
+    document.getElementById('attAbsent').textContent = absent;
+    document.getElementById('attLeave').textContent = leave;
+    document.getElementById('attHoliday').textContent = holiday;
+    document.getElementById('attTotal').textContent = data.length;
+}
+
+function renderAttendance(data) {
+    const tbody = document.getElementById('attendanceBody');
+    if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">📭 No attendance records found</td></tr>';
+        return;
+    }
+    let html = '';
+    data.forEach(r => {
+        let statusClass = 'attendance-absent';
+        let statusText = 'ABSENT';
+        if(r.status === 'present') { statusClass = 'attendance-present'; statusText = 'PRESENT'; }
+        else if(r.status === 'late') { statusClass = 'attendance-late'; statusText = 'LATE'; }
+        else if(r.status === 'leave') { statusClass = 'attendance-leave'; statusText = 'LEAVE'; }
+        else if(r.status === 'holiday') { statusClass = 'attendance-holiday'; statusText = 'HOLIDAY'; }
+        let selfieHtml = '-';
+        if(r.selfie) {
+            selfieHtml = `<a href="../uploads/selfies/${r.selfie}" target="_blank" style="color:#60a5fa; text-decoration:none; display:inline-block; padding:4px 10px; background:rgba(96,165,250,0.1); border-radius:6px;">📷 View Selfie</a>`;
+        }
+        html += `
+        <tr>
+            <td>${r.date}</td>
+            <td><strong>${r.name || r.emp_id}</strong></td>
+            <td>${r.emp_id}</td>
+            <td>${r.time || '--'}</td>
+            <td><span class="attendance-badge ${statusClass}">${statusText}</span></td>
+            <td>${selfieHtml}</td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+// ============================================
+// LEAVE REQUESTS MANAGEMENT
+// ============================================
+
+function populateMonthSelects() {
+    const select = document.getElementById('leaveFilterMonth');
+    if(!select) return;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+    select.innerHTML = '';
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = '📅 All Months';
+    select.appendChild(allOption);
+    for(let year = currentYear; year >= 2024; year--) {
+        for(let month = 12; month >= 1; month--) {
+            const monthStr = String(month).padStart(2, '0');
+            const dateObj = new Date(year, month - 1, 1);
+            const monthName = dateObj.toLocaleString('default', { month: 'short' });
+            const option = document.createElement('option');
+            option.value = year + '-' + monthStr;
+            option.textContent = monthName + ' ' + year;
+            if(year === currentYear && month === currentMonth) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        }
+    }
+}
+
+async function loadLeaveRequests() {
+    try {
+        const month = document.getElementById('leaveFilterMonth').value;
+        let url = API + 'leave/get_all.php';
+        if(month) {
+            url += '?month=' + month;
+        }
+        const res = await fetch(url);
+        const data = await res.json();
+        renderLeaveRequests(data);
+        updateLeaveStats(data);
+    } catch(e) {
+        console.error("Error loading leave requests:", e);
+        document.getElementById('leaveBody').innerHTML = '<tr><td colspan="10" style="text-align:center; padding:30px; color:#94a3b8;">❌ Failed to load leave requests</td></tr>';
+    }
+}
+
+function updateLeaveStats(data) {
+    if(!data) return;
+    let pending = 0, approved = 0, rejected = 0;
+    data.forEach(r => {
+        if(r.status === 'pending') pending++;
+        else if(r.status === 'approved') approved++;
+        else if(r.status === 'rejected') rejected++;
+    });
+    document.getElementById('leavePending').textContent = pending;
+    document.getElementById('leaveApproved').textContent = approved;
+    document.getElementById('leaveRejected').textContent = rejected;
+    document.getElementById('leaveTotal').textContent = data.length;
+}
+
+// ============================================
+// NOTIFICATION FUNCTION (Add if missing)
+// ============================================
+function showNotification(msg) {
+    // Create temporary notification
+    const el = document.createElement('div');
+    el.style.cssText = `
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: #1e293b; color: white; padding: 12px 24px;
+        border-radius: 14px; border-left: 4px solid #22c55e;
+        z-index: 9999; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        font-size: 14px; font-weight: 500;
+    `;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => { el.remove(); }, 3000);
+}
+
+// ============================================
+// DOWNLOAD LEAVE PDF (Individual Application)
+// ============================================
+function downloadLeavePDF(leaveId) {
+    console.log("📄 downloadLeavePDF called with ID:", leaveId);
+    
+    if(!leaveId) {
+        showNotification('❌ Invalid leave ID');
+        return;
+    }
+    
+    showNotification('⏳ Generating PDF...');
+    var url = '../backend/leave/download_leave_pdf.php?id=' + leaveId + '&t=' + Date.now();
+    console.log("📄 URL:", url);
+    
+    window.open(url, '_blank');
+    
+    setTimeout(function() {
+        showNotification('✅ PDF download started!');
+    }, 2000);
+}
+
+// ============================================
+// DOWNLOAD LEAVE REPORT (Monthly Report) - FIXED
+// ============================================
+function downloadLeaveReport() {
+    console.log("📥 downloadLeaveReport called");
+    
+    var monthSelect = document.getElementById('leaveFilterMonth');
+    console.log("📥 Month Select:", monthSelect);
+    
+    if(!monthSelect) {
+        alert('❌ Month selector not found!');
+        return;
+    }
+    
+    var monthValue = monthSelect.value;
+    console.log("📥 Month Value:", monthValue);
+    
+    if(!monthValue) {
+        alert('⚠️ Please select a month first!');
+        return;
+    }
+    
+    showNotification('⏳ Generating report...');
+    var url = '../backend/leave/export_report.php?month=' + monthValue + '&t=' + Date.now();
+    console.log("📥 URL:", url);
+    
+    window.open(url, '_blank');
+    
+    setTimeout(function() {
+        showNotification('✅ Report download started!');
+    }, 2000);
+}
+
+// ============================================
+// DOWNLOAD ATTENDANCE PDF
+// ============================================
+function downloadAttendancePDF() {
+    console.log("📄 downloadAttendancePDF called");
+    
+    var monthSelect = document.getElementById('attendanceFilterMonth');
+    if(!monthSelect) {
+        alert('❌ Month selector not found!');
+        return;
+    }
+    
+    var monthValue = monthSelect.value;
+    if(!monthValue) {
+        alert('⚠️ Please select a month first!');
+        return;
+    }
+    
+    showNotification('⏳ Generating attendance PDF...');
+    var url = '../backend/user/export_attendance_pdf.php?month=' + monthValue + '&t=' + Date.now();
+    console.log("📄 URL:", url);
+    
+    window.open(url, '_blank');
+    
+    setTimeout(function() {
+        showNotification('✅ PDF download started!');
+    }, 2000);
+}
+
+// ============================================
+// RENDER LEAVE REQUESTS (Updated with PDF button)
+// ============================================
+function renderLeaveRequests(data) {
+    const tbody = document.getElementById('leaveBody');
+    if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:30px; color:#94a3b8;">📭 No leave requests found</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach(r => {
+        let statusClass = 'leave-pending';
+        let statusText = r.status || 'PENDING';
+        
+        // ✅ Fix: Status display based on actual status
+        if(r.status === 'approved') { 
+            statusClass = 'leave-approved'; 
+            statusText = '✅ APPROVED';
+            if(r.reviewed_by) {
+                statusText += ' by ' + r.reviewed_by;
+            }
+        }
+        else if(r.status === 'rejected') { 
+            statusClass = 'leave-rejected'; 
+            statusText = '❌ REJECTED';
+            if(r.reviewed_by) {
+                statusText += ' by ' + r.reviewed_by;
+            }
+        }
+        else if(r.status === 'pending') { 
+            statusClass = 'leave-pending'; 
+            statusText = '⏳ PENDING';
+        }
+        
+        let days = 0;
+        if(r.from_date && r.to_date) {
+            const from = new Date(r.from_date);
+            const to = new Date(r.to_date);
+            days = Math.ceil((to - from) / (1000 * 60 * 60 * 24)) + 1;
+            if(r.leave_type === 'half') days = 0.5;
+        }
+        
+        // ✅ PDF Download Button
+        let pdfBtn = `
+            <button class="action-btn" onclick="downloadLeavePDF(${r.id})" 
+                    style="background:linear-gradient(135deg,#dc2626,#b91c1c); padding:4px 10px; border:none; border-radius:8px; color:white; cursor:pointer; font-size:11px; font-weight:600; margin:1px; transition:0.3s; white-space:nowrap;"
+                    onmouseover="this.style.opacity='0.85'; this.style.transform='scale(0.95)'" 
+                    onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'"
+                    title="Download PDF Application">
+                📄 PDF
+            </button>
+        `;
+        
+        let actionHtml = '';
+        if(r.status === 'pending') {
+            actionHtml = `
+                <button class="action-btn approveBtn" onclick="openReviewModal(${r.id}, 'approved')" title="Approve">✅</button>
+                <button class="action-btn rejectBtn" onclick="openReviewModal(${r.id}, 'rejected')" title="Reject">❌</button>
+                ${pdfBtn}
+            `;
+        } else {
+            actionHtml = `
+                <span style="color:#94a3b8; font-size:11px; display:block; margin-bottom:4px;">${r.reviewed_by ? 'By: ' + r.reviewed_by : ''}</span>
+                ${pdfBtn}
+            `;
+        }
+        
+        html += `
+        <tr>
+            <td>${r.created_at ? r.created_at.split(' ')[0] : r.from_date}</td>
+            <td><strong>${r.name || r.emp_id}</strong></td>
+            <td>${r.emp_id}</td>
+            <td><span style="text-transform:uppercase; font-weight:600; font-size:11px; padding:2px 8px; border-radius:50px; ${r.leave_category === 'casual' ? 'background:rgba(34,197,94,0.15);color:#4ade80;' : r.leave_category === 'sick' ? 'background:rgba(59,130,246,0.15);color:#60a5fa;' : 'background:rgba(245,158,11,0.15);color:#fbbf24;'}">${r.leave_category || r.leave_type}</span></td>
+            <td>${r.from_date}</td>
+            <td>${r.to_date}</td>
+            <td>${days}</td>
+            <td style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.reason || '-'}</td>
+            <td><span class="leave-status ${statusClass}">${statusText}</span></td>
+            <td style="min-width:130px;">${actionHtml}</td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+    
+// ============================================
+// REVIEW MODAL - Approve/Reject with Name
+// ============================================
+
+function openReviewModal(id, action) {
+    reviewLeaveId = id;
+    reviewAction = action;
+    const modal = document.getElementById('reviewModal');
+    const title = document.getElementById('reviewModalTitle');
+    const sub = document.getElementById('reviewModalSub');
+    const submitBtn = document.getElementById('reviewSubmitBtn');
+    const nameInput = document.getElementById('reviewAdminName');
+    if(action === 'approved') {
+        title.textContent = '✅ Approve Leave';
+        sub.textContent = 'Enter your name to approve this leave request';
+        submitBtn.textContent = '✅ Approve';
+        submitBtn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+    } else if(action === 'rejected') {
+        title.textContent = '❌ Reject Leave';
+        sub.textContent = 'Enter your name to reject this leave request';
+        submitBtn.textContent = '❌ Reject';
+        submitBtn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+    }
+    nameInput.value = '';
+    modal.style.display = 'flex';
+}
+
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+    reviewLeaveId = null;
+    reviewAction = null;
+}
+
+async function submitReview() {
+    const name = document.getElementById('reviewAdminName').value.trim();
+    if(!name) {
+        alert('⚠️ Please enter your name');
+        return;
+    }
+    if(name.length < 2) {
+        alert('⚠️ Name must be at least 2 characters');
+        return;
+    }
+    const id = reviewLeaveId;
+    const action = reviewAction;
+    if(!id || !action) {
+        alert('❌ Invalid request');
+        return;
+    }
+    let sendAction = action;
+    if(action === 'approve') sendAction = 'approved';
+    if(action === 'reject') sendAction = 'rejected';
+    try {
+        const res = await fetch(API + 'leave/update_balance.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ 
+                leave_id: id, 
+                action: sendAction,
+                reviewed_by: name
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closeReviewModal();
+            loadLeaveRequests();
+            loadBalanceData();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// HOLIDAY MANAGEMENT
+// ============================================
+async function loadHolidaySettings() {
+    try {
+        const res = await fetch(API + 'holiday/get.php');
+        const data = await res.json();
+        if(data.success) {
+            holidayConfig = data.holidays || [];
+            renderHolidaySettings(holidayConfig);
+        }
+    } catch(e) {
+        console.error("Error loading holiday settings:", e);
+        renderHolidaySettings([]);
+    }
+}
+
+function renderHolidaySettings(holidays) {
+    const tbody = document.getElementById('holidayBody');
+    if(!holidays || holidays.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:30px; color:#94a3b8;">No holiday settings found</td></tr>';
+        return;
+    }
+    let html = '';
+    holidays.forEach(item => {
+        const days = item.holidays || [];
+        const dayNames = days.map(d => DAY_NAMES[d]).join(', ');
+        html += `
+        <tr>
+            <td><strong>${item.emp_id}</strong></td>
+            <td>${item.name || item.emp_id}</td>
+            <td>
+                ${days.map(d => `<span class="holiday-tag ${DAY_NAMES[d].toLowerCase()}">${DAY_NAMES[d]}</span>`).join(' ')}
+                ${days.length === 0 ? '<span style="color:#94a3b8; font-size:11px;">No holiday</span>' : ''}
+            </td>
+            <td>
+                <button class="action-btn deleteBtn" onclick="removeHolidayEmployee('${item.emp_id}')">🗑️</button>
+            </td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+async function addHolidayEmployee() {
+    const empId = document.getElementById('holiday_emp_id').value.trim();
+    const daysStr = document.getElementById('holiday_days').value;
+    const days = JSON.parse(daysStr);
+    if(!empId) {
+        alert('Please enter Employee ID');
+        return;
+    }
+    try {
+        const res = await fetch(API + 'holiday/update.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ emp_id: empId, days: days })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadHolidaySettings();
+            document.getElementById('holiday_emp_id').value = '';
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+async function removeHolidayEmployee(empId) {
+    if(!confirm(`Remove holiday settings for ${empId}?`)) return;
+    try {
+        const res = await fetch(API + 'holiday/update.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ emp_id: empId, days: [] })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadHolidaySettings();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ============================================
+// LEAVE BALANCE MANAGEMENT
+// ============================================
+
+async function setEmployeeBalance() {
+    const empId = document.getElementById('bal_emp_id').value.trim();
+    const casual = parseFloat(document.getElementById('bal_casual').value) || 0;
+    const sick = parseFloat(document.getElementById('bal_sick').value) || 0;
+    const earn = parseFloat(document.getElementById('bal_earn').value) || 0;
+    const earnReason = document.getElementById('bal_earn_reason').value.trim();
+    if(!empId) {
+        alert('Please enter Employee ID');
+        return;
+    }
+    try {
+        const res = await fetch(API + 'leave/set_balance.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ 
+                emp_id: empId, 
+                casual_leave: casual,
+                sick_leave: sick,
+                earn_leave: earn,
+                earn_reason: earnReason
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadBalanceData();
+            document.getElementById('bal_emp_id').value = '';
+            document.getElementById('bal_earn_reason').value = '';
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+async function loadBalanceData() {
+    try {
+        const res = await fetch(API + 'leave/get_all_balances.php');
+        const data = await res.json();
+        renderBalanceData(data);
+    } catch(e) {
+        console.error("Error loading balance data:", e);
+        document.getElementById('balanceBody').innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">❌ Failed to load balance data</td></tr>';
+    }
+}
+
+function renderBalanceData(data) {
+    const tbody = document.getElementById('balanceBody');
+    if(!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94a3b8;">No balance data found</td></tr>';
+        return;
+    }
+    let html = '';
+    data.forEach(r => {
+        const casualRemaining = (parseFloat(r.casual_leave) || 0) - (parseFloat(r.casual_used) || 0);
+        const sickRemaining = (parseFloat(r.sick_leave) || 0) - (parseFloat(r.sick_used) || 0);
+        const earnRemaining = (parseFloat(r.earn_leave) || 0) - (parseFloat(r.earn_used) || 0);
+        html += `
+        <tr>
+            <td><strong>${r.name || r.emp_id || 'Unknown'}</strong></td>
+            <td>${r.emp_id || '-'}</td>
+            <td>${r.year || new Date().getFullYear()}</td>
+            <td>
+                <span class="balance-badge balance-casual">${r.casual_leave || 0}</span> / 
+                <span class="balance-badge balance-earn">${r.casual_used || 0}</span> / 
+                <span class="balance-badge balance-casual">${casualRemaining}</span>
+            </td>
+            <td>
+                <span class="balance-badge balance-sick">${r.sick_leave || 0}</span> / 
+                <span class="balance-badge balance-earn">${r.sick_used || 0}</span> / 
+                <span class="balance-badge balance-sick">${sickRemaining}</span>
+            </td>
+            <td>
+                <span class="balance-badge balance-earn">${r.earn_leave || 0}</span> / 
+                <span class="balance-badge balance-earn">${r.earn_used || 0}</span> / 
+                <span class="balance-badge balance-earn">${earnRemaining}</span>
+            </td>
+            <td style="font-size:11px; color:#94a3b8; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.earn_reason || '-'}</td>
+            <td>
+                <button class="action-btn editBtn" onclick="openEditBalanceModal(${r.id})">✏️</button>
+                <button class="action-btn deleteBtn" onclick="deleteBalance(${r.id})">🗑️</button>
+            </td>
+        </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function openEditBalanceModal(id) {
+    fetch(API + 'leave/get_all_balances.php')
+        .then(res => res.json())
+        .then(data => {
+            const item = data.find(d => d.id === id);
+            if(!item) {
+                alert('Balance not found');
+                return;
+            }
+            const existingModal = document.getElementById('editBalanceModal');
+            if(existingModal) {
+                existingModal.remove();
+            }
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.id = 'editBalanceModal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <button class="modal-close" onclick="closeEditBalanceModal()">✕</button>
+                    <h2>✏️ Edit Leave Balance</h2>
+                    <p>Update balance for ${item.name || item.emp_id}</p>
+                    <input type="hidden" id="edit_balance_id" value="${item.id}">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div class="inputGroup">
+                            <label>Casual Leave (Total)</label>
+                            <input type="number" id="edit_casual_total" value="${item.casual_leave || 10}" min="0" step="0.5">
+                        </div>
+                        <div class="inputGroup">
+                            <label>Casual Leave (Used)</label>
+                            <input type="number" id="edit_casual_used" value="${item.casual_used || 0}" min="0" step="0.5">
+                        </div>
+                        <div class="inputGroup">
+                            <label>Sick Leave (Total)</label>
+                            <input type="number" id="edit_sick_total" value="${item.sick_leave || 10}" min="0" step="0.5">
+                        </div>
+                        <div class="inputGroup">
+                            <label>Sick Leave (Used)</label>
+                            <input type="number" id="edit_sick_used" value="${item.sick_used || 0}" min="0" step="0.5">
+                        </div>
+                        <div class="inputGroup">
+                            <label>Earn Leave (Total)</label>
+                            <input type="number" id="edit_earn_total" value="${item.earn_leave || 0}" min="0" step="0.5">
+                        </div>
+                        <div class="inputGroup">
+                            <label>Earn Leave (Used)</label>
+                            <input type="number" id="edit_earn_used" value="${item.earn_used || 0}" min="0" step="0.5">
+                        </div>
+                    </div>
+                    <div class="inputGroup">
+                        <label>Earn Reason</label>
+                        <input type="text" id="edit_earn_reason" value="${item.earn_reason || ''}" placeholder="e.g., 16 Dec duty">
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-cancel-btn" onclick="closeEditBalanceModal()">Cancel</button>
+                        <button class="modal-save-btn" onclick="saveEditBalance()">💾 Save Changes</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        })
+        .catch(e => {
+            alert('Error loading balance data: ' + e.message);
+        });
+}
+    
+function closeEditBalanceModal() {
+    const modal = document.getElementById('editBalanceModal');
+    if(modal) {
+        modal.remove();
+    }
+}
+
+async function saveEditBalance() {
+    const id = document.getElementById('edit_balance_id').value;
+    const casual_leave = parseFloat(document.getElementById('edit_casual_total').value) || 0;
+    const casual_used = parseFloat(document.getElementById('edit_casual_used').value) || 0;
+    const sick_leave = parseFloat(document.getElementById('edit_sick_total').value) || 0;
+    const sick_used = parseFloat(document.getElementById('edit_sick_used').value) || 0;
+    const earn_leave = parseFloat(document.getElementById('edit_earn_total').value) || 0;
+    const earn_used = parseFloat(document.getElementById('edit_earn_used').value) || 0;
+    const earn_reason = document.getElementById('edit_earn_reason').value.trim() || '';
+    if(!id || id == 0) {
+        alert('❌ Invalid balance record');
+        return;
+    }
+    try {
+        const res = await fetch(API + 'leave/edit_balance.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                id: id,
+                casual_leave: casual_leave,
+                casual_used: casual_used,
+                sick_leave: sick_leave,
+                sick_used: sick_used,
+                earn_leave: earn_leave,
+                earn_used: earn_used,
+                earn_reason: earn_reason
+            })
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            closeEditBalanceModal();
+            loadBalanceData();
+        } else {
+            alert('❌ ' + (result.message || 'Failed to update balance'));
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+async function deleteBalance(id) {
+    if(!confirm('Are you sure you want to delete this balance record?')) return;
+    try {
+        const res = await fetch(API + 'leave/delete_balance.php?id=' + id, {
+            credentials: 'include'
+        });
+        const result = await res.json();
+        if(result.success) {
+            alert('✅ ' + result.message);
+            loadBalanceData();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+    
+    
+    // ============================================
+// HOLIDAY AUTO COUNT SETTINGS
+// ============================================
+
+// ✅ Load Holiday Auto Settings
+async function loadHolidayAutoSettings() {
+    try {
+        const res = await fetch(API + 'holiday/get_auto_settings.php');
+        const data = await res.json();
+        
+        if(data.success) {
+            document.getElementById('holiday_auto_time').value = data.auto_time || '18:00';
+            document.getElementById('holiday_auto_status').value = data.is_active || 1;
+            document.getElementById('currentAutoTime').textContent = data.auto_time || '18:00';
+            document.getElementById('currentAutoStatus').textContent = data.is_active == 1 ? '🟢 Active' : '🔴 Inactive';
+            document.getElementById('currentAutoStatus').style.color = data.is_active == 1 ? '#4ade80' : '#f87171';
+        }
+    } catch(e) {
+        console.error('Error loading holiday auto settings:', e);
+    }
+}
+
+// ✅ Save Holiday Auto Settings
+async function saveHolidayAutoSettings() {
+    const auto_time = document.getElementById('holiday_auto_time').value;
+    const is_active = parseInt(document.getElementById('holiday_auto_status').value);
+    
+    if(!auto_time) {
+        alert('⚠️ Please select a time');
+        return;
+    }
+    
+    try {
+        const res = await fetch(API + 'holiday/save_auto_settings.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ auto_time, is_active })
+        });
+        const result = await res.json();
+        
+        if(result.success) {
+            const el = document.getElementById('holidayAutoStatus');
+            el.textContent = '✅ ' + result.message;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+            loadHolidayAutoSettings();
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+// ✅ Run Holiday Auto Count Manually
+async function runHolidayAutoCount() {
+    if(!confirm('Run holiday auto count now?')) return;
+    
+    try {
+        const res = await fetch(API + 'holiday/auto_count.php');
+        const data = await res.json();
+        
+        if(data.success) {
+            alert('✅ ' + data.message);
+            loadAttendanceRecords();
+            loadDashboard();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+    
+    // ============================================
+// DASHBOARD - LOAD STATS
+// ============================================
+async function loadDashboard() {
+    try {
+        const res = await fetch(API + 'user/user_dashboard.php');
+        const data = await res.json();
+        if(data.success) {
+            // Update stats in admin panel
+            const statElements = document.querySelectorAll('.stat-card .num');
+            if(statElements.length > 0) {
+                // Present
+                const presentEl = document.getElementById('presentCount');
+                if(presentEl) presentEl.textContent = data.present || 0;
+                
+                // Late
+                const lateEl = document.getElementById('lateCount');
+                if(lateEl) lateEl.textContent = data.late || 0;
+                
+                // Absent
+                const absentEl = document.getElementById('absentCount');
+                if(absentEl) absentEl.textContent = data.absent || 0;
+                
+                // Leave
+                const leaveEl = document.getElementById('leaveCount');
+                if(leaveEl) leaveEl.textContent = data.leaves || 0;
+                
+                // Holiday
+                const holidayEl = document.getElementById('holidayCount');
+                if(holidayEl) holidayEl.textContent = data.holidays || 0;
+            }
+        }
+    } catch(e) { 
+        console.error('Dashboard error:', e); 
+    }
+}
+    
+   
+    
+
+// ============================================
+// SCHEDULE MANAGEMENT
+// ============================================
+
+const DEFAULT_SCHEDULE = {
+    m_p_start: '09:00',
+    m_p_end: '09:15',
+    m_l_start: '09:16',
+    m_l_end: '09:30',
+    a_p_start: '14:00',
+    a_p_end: '14:15',
+    a_l_start: '14:16',
+    a_l_end: '14:30',
+    auto_absent_time: '16:00'
+};
+
+async function loadSchedule() {
+    try {
+        const res = await fetch(API + 'schedule_get.php');
+        const data = await res.json();
+        if(data.success) {
+            document.getElementById('m_p_start').value = data.morning_present_start || DEFAULT_SCHEDULE.m_p_start;
+            document.getElementById('m_p_end').value = data.morning_present_end || DEFAULT_SCHEDULE.m_p_end;
+            document.getElementById('m_l_start').value = data.morning_late_start || DEFAULT_SCHEDULE.m_l_start;
+            document.getElementById('m_l_end').value = data.morning_late_end || DEFAULT_SCHEDULE.m_l_end;
+            document.getElementById('a_p_start').value = data.afternoon_present_start || DEFAULT_SCHEDULE.a_p_start;
+            document.getElementById('a_p_end').value = data.afternoon_present_end || DEFAULT_SCHEDULE.a_p_end;
+            document.getElementById('a_l_start').value = data.afternoon_late_start || DEFAULT_SCHEDULE.a_l_start;
+            document.getElementById('a_l_end').value = data.afternoon_late_end || DEFAULT_SCHEDULE.a_l_end;
+            document.getElementById('auto_absent_time').value = data.auto_absent_time || DEFAULT_SCHEDULE.auto_absent_time;
+            showScheduleStatus('📋 Schedule loaded', '#60a5fa');
+        }
+    } catch(e) {
+        console.error("Error loading schedule:", e);
+    }
+}
+
+async function saveSchedule() {
+    const data = {
+        morning_present_start: document.getElementById('m_p_start').value,
+        morning_present_end: document.getElementById('m_p_end').value,
+        morning_late_start: document.getElementById('m_l_start').value,
+        morning_late_end: document.getElementById('m_l_end').value,
+        afternoon_present_start: document.getElementById('a_p_start').value,
+        afternoon_present_end: document.getElementById('a_p_end').value,
+        afternoon_late_start: document.getElementById('a_l_start').value,
+        afternoon_late_end: document.getElementById('a_l_end').value,
+        auto_absent_time: document.getElementById('auto_absent_time').value
+    };
+    if(!data.morning_present_start || !data.morning_present_end || !data.morning_late_start || !data.morning_late_end ||
+       !data.afternoon_present_start || !data.afternoon_present_end || !data.afternoon_late_start || !data.afternoon_late_end || !data.auto_absent_time) {
+        alert('⚠️ Please fill all time fields');
+        return;
+    }
+    try {
+        const res = await fetch(API + 'schedule_save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if(result.success) {
+            showScheduleStatus('✅ ' + result.message, '#4ade80');
+        } else {
+            alert('❌ ' + result.message);
+        }
+    } catch(e) {
+        alert('❌ Error: ' + e.message);
+    }
+}
+
+function resetSchedule() {
+    if(!confirm('Reset schedule to default?')) return;
+    document.getElementById('m_p_start').value = DEFAULT_SCHEDULE.m_p_start;
+    document.getElementById('m_p_end').value = DEFAULT_SCHEDULE.m_p_end;
+    document.getElementById('m_l_start').value = DEFAULT_SCHEDULE.m_l_start;
+    document.getElementById('m_l_end').value = DEFAULT_SCHEDULE.m_l_end;
+    document.getElementById('a_p_start').value = DEFAULT_SCHEDULE.a_p_start;
+    document.getElementById('a_p_end').value = DEFAULT_SCHEDULE.a_p_end;
+    document.getElementById('a_l_start').value = DEFAULT_SCHEDULE.a_l_start;
+    document.getElementById('a_l_end').value = DEFAULT_SCHEDULE.a_l_end;
+    document.getElementById('auto_absent_time').value = DEFAULT_SCHEDULE.auto_absent_time;
+    saveSchedule();
+}
+
+function showScheduleStatus(message, color) {
+    const el = document.getElementById('scheduleStatus');
+    el.textContent = message;
+    el.style.display = 'block';
+    el.style.color = color || '#4ade80';
+    el.style.background = color ? `rgba(${color === '#4ade80' ? '34,197,94' : color === '#60a5fa' ? '96,165,250' : '245,158,11'}, .1)` : 'rgba(34,197,94,.1)';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ============= EVENT LISTENERS =============
+document.getElementById('searchInput').addEventListener('input', function(){
+    const value = this.value.toLowerCase();
+    const filtered = allData.filter(i=>
+        (i.name || '').toLowerCase().includes(value) ||
+        (i.emp_id || '').toLowerCase().includes(value) ||
+        (i.facility || '').toLowerCase().includes(value)
+    );
+    renderTable(filtered);
+});
+
+document.getElementById('employeeSearch').addEventListener('input', function() {
+    const value = this.value;
+    fetch(API + 'employee/employee_get.php?search=' + encodeURIComponent(value))
+        .then(res => res.json())
+        .then(data => renderEmployees(data))
+        .catch(e => console.error(e));
+});
+
+document.getElementById('attendanceSearch').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#attendanceBody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+
+document.getElementById('leaveSearch').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#leaveBody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+
+document.getElementById('holidaySearch').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#holidayBody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+
+document.getElementById('monthSelect').addEventListener('change', function(){ loadRecords(); });
+document.getElementById('password').addEventListener('keypress', function(e){ if(e.key === 'Enter') login(); });
+document.getElementById('username').addEventListener('keypress', function(e){ if(e.key === 'Enter') login(); });
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if(document.getElementById('m_p_start')) {
+        loadSchedule();
+    }
+    loadEmployees();
+});
+</script>
+</body>
+</html>
