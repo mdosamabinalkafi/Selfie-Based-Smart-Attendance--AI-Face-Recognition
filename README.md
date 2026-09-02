@@ -36,4 +36,5 @@ The system uses AI-powered face detection to accurately identify and analyze fac
 * 🕶️ **Sunglasses Detection** — Identifies faces wearing sunglasses.
 * 🌙 **Low-Light Detection** — Detects and handles faces in low-light environments.
 * 😷 **Mask Detection** — Identifies faces wearing masks.
+* 👥 Multiple Faces Detection — Checks if multiple faces are present in the frame simultaneously, showing the popup "Only one person allowed" if more than one face is detected.
 
